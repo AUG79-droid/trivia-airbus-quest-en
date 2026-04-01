@@ -1,0 +1,615 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trivia Airbus Quest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap');
+:root{
+  --bg:#071425;--panel:#0d2140;--panel2:#122a50;--line:rgba(255,255,255,.10);
+  --text:#f4f8ff;--muted:#a7bcd8;--green:#73f2b7;--cyan:#78ddff;--gold:#f2c55c;
+  --c1:#63b7ff;--c2:#eab54d;--c3:#69d69a;--c4:#ae9cff;--c5:#ff8ea4;
+  --shadow:0 24px 60px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:Inter,Arial,sans-serif;color:var(--text);min-height:100vh;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(120,220,255,.12), transparent 18%),
+    radial-gradient(circle at 88% 8%, rgba(105,240,180,.08), transparent 14%),
+    linear-gradient(180deg,#061221 0%, #081a33 40%, #071425 100%);
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size:30px 30px;
+}
+.topbar{
+  position:sticky;top:12px;z-index:20;width:min(1380px, calc(100% - 26px));margin:14px auto 0;
+  height:82px;padding:0 22px;border-radius:24px;border:1px solid var(--line);
+  background:rgba(8,20,40,.78);backdrop-filter:blur(16px);box-shadow:0 14px 30px rgba(0,0,0,.22);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{font-family:Manrope,Inter,sans-serif;font-size:22px;font-weight:800;letter-spacing:-.03em}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap}
+.small-btn,.btn{
+  border:0;border-radius:16px;cursor:pointer;font-family:inherit;font-weight:800;transition:.18s;
+}
+.small-btn:hover,.btn:hover{transform:translateY(-2px)}
+.small-btn{
+  padding:11px 15px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.10)
+}
+.page{max-width:1380px;margin:0 auto;padding:24px 18px 40px;position:relative;z-index:1}
+.layout{display:grid;grid-template-columns:320px minmax(520px,1fr) 320px;gap:20px;align-items:start}
+.card{
+  background:linear-gradient(180deg, rgba(13,31,59,.90), rgba(8,20,40,.94));
+  border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;
+}
+.panel{padding:22px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#92cbff}
+.title{font-family:Manrope,Inter,sans-serif;font-size:54px;line-height:.92;letter-spacing:-.05em;margin:10px 0 14px}
+.lead{color:rgba(244,248,255,.82);line-height:1.7;font-size:16px;margin:0}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{padding:15px 18px}
+.btn-primary{background:linear-gradient(135deg,var(--green),#b8ffd8);color:#07283a;box-shadow:0 18px 34px rgba(103,241,176,.24)}
+.btn-secondary{background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:#fff;border:1px solid rgba(255,255,255,.10)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.stat{padding:16px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08)}
+.stat strong{display:block;font-family:Manrope,Inter,sans-serif;font-size:28px}
+.stat span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.legend-item{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.legend-dot{width:12px;height:12px;border-radius:50%;margin-top:4px;flex:0 0 auto}
+.legend-item strong{display:block;font-size:14px}
+.legend-item span{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.board-shell{
+  padding:18px;min-height:760px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(120,220,255,.10), transparent 23%),
+    radial-gradient(circle at 50% 50%, rgba(103,241,176,.06), transparent 48%),
+    linear-gradient(180deg,rgba(9,22,43,.94),rgba(7,18,35,.98));
+  display:flex;align-items:center;justify-content:center;
+}
+.board-frame{
+  width:min(720px,100%);aspect-ratio:1/1;position:relative;border-radius:34px;
+  display:flex;align-items:center;justify-content:center;
+}
+.board-title{
+  position:absolute;left:24px;top:18px;z-index:2
+}
+.board-title h2{font-family:Manrope,Inter,sans-serif;font-size:42px;line-height:.95;letter-spacing:-.04em;margin:0 0 8px}
+.board-title p{margin:0;color:var(--muted);font-size:14px}
+#boardSvg{width:100%;height:100%;display:block}
+.board-note{
+  position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;
+  padding:12px 16px;border-radius:16px;background:rgba(5,17,38,.64);border:1px solid rgba(255,255,255,.08);
+  text-align:center;color:var(--muted);font-size:13px;max-width:min(420px, 78%);
+}
+.turn-card,.score-card,.rules-card{
+  padding:16px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.08);
+}
+.turn-card + .score-card,.score-card + .rules-card{margin-top:14px}
+.turn-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.turn-head h3,.rules-card h3,.score-title{margin:0;font-family:Manrope,Inter,sans-serif;font-size:28px;line-height:1}
+.turn-card p, .rules-card p{color:var(--muted);line-height:1.6}
+.dice-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px}
+.die{
+  width:86px;height:86px;border-radius:24px;display:grid;place-items:center;font-size:42px;font-weight:800;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.10)
+}
+.status{
+  margin-top:12px;padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  min-height:74px;color:#e9f2ff;line-height:1.5
+}
+.team-list{display:grid;gap:12px}
+.team{
+  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  padding:16px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08)
+}
+.team.active{border-color:rgba(121,223,255,.45);box-shadow:0 0 0 1px rgba(121,223,255,.18) inset}
+.team-token{width:18px;height:18px;border-radius:50%}
+.team h4{margin:0;font-size:16px}
+.team p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.team-score{font-family:Manrope,Inter,sans-serif;font-size:26px;font-weight:800}
+.badges{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.badge{width:14px;height:14px;border-radius:50%;opacity:.2;border:2px solid rgba(255,255,255,.22)}
+.badge.on{opacity:1;box-shadow:0 0 12px rgba(255,255,255,.16)}
+.rule-list{margin:10px 0 0 0;padding-left:20px;color:#e9f2ff;line-height:1.7}
+.overlay{
+  position:fixed;inset:0;background:rgba(3,10,20,.74);display:none;align-items:center;justify-content:center;z-index:40;padding:20px;
+  backdrop-filter:blur(6px)
+}
+.overlay.show{display:flex}
+.modal{
+  width:min(920px, calc(100% - 10px));background:linear-gradient(180deg, rgba(13,31,59,.96), rgba(8,20,40,.98));border:1px solid rgba(255,255,255,.10);
+  border-radius:30px;box-shadow:0 30px 80px rgba(0,0,0,.34);overflow:hidden
+}
+.modal-grid{display:grid;grid-template-columns:1.04fr .96fr}
+.modal-left{padding:30px;background:
+  radial-gradient(circle at 80% 20%, rgba(120,220,255,.16), transparent 18%),
+  radial-gradient(circle at 20% 80%, rgba(103,241,176,.12), transparent 20%),
+  linear-gradient(160deg,#0d2d5f 0%,#0a2146 55%,#061327 100%)}
+.modal-right{padding:28px;background:linear-gradient(180deg, rgba(11,26,54,.94), rgba(8,20,42,.98))}
+.question-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.question-head h3{margin:0;font-family:Manrope,Inter,sans-serif;font-size:32px;line-height:1}
+.pill{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.10)}
+.question-text{font-family:Manrope,Inter,sans-serif;font-size:40px;line-height:.98;letter-spacing:-.04em;margin:18px 0 16px}
+.question-help{font-size:16px;line-height:1.7;color:rgba(244,248,255,.82)}
+.answers{display:grid;gap:12px}
+.answer{
+  width:100%;text-align:left;padding:16px 18px;border-radius:18px;cursor:pointer;font-size:16px;font-weight:700;color:#eff6ff;
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.08)
+}
+.answer:hover{transform:translateY(-2px);border-color:rgba(121,223,255,.30)}
+.feedback-box{
+  margin-top:18px;padding:18px;border-radius:18px;display:none
+}
+.feedback-box.show{display:block}
+.feedback-box.ok{background:linear-gradient(160deg,#0f8d59,#22d787 68%,#86f2b8 100%);color:#083728}
+.feedback-box.ko{background:linear-gradient(160deg,#992c45,#e06a76 72%,#f5a4ad 100%);color:#fff}
+.feedback-box h4{margin:0 0 8px;font-size:24px;font-family:Manrope,Inter,sans-serif}
+.feedback-box p{margin:0;line-height:1.6}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.hidden{display:none !important}
+.win-banner{
+  padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,var(--green),#b8ffd8);color:#082d3f;font-weight:800;margin-top:14px
+}
+@media (max-width:1180px){
+  .layout{grid-template-columns:1fr}
+  .board-shell{min-height:680px}
+}
+@media (max-width:820px){
+  .title{font-size:44px}
+  .modal-grid{grid-template-columns:1fr}
+  .question-text{font-size:32px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Trivia Airbus Quest</div>
+  <div class="top-actions">
+    <button class="small-btn" id="homeBtn">Home</button>
+    <button class="small-btn" id="rulesBtn">Rules</button>
+  </div>
+</header>
+
+<main class="page">
+  <div class="layout">
+    <section class="card panel">
+      <div class="eyebrow">Board game · English version</div>
+      <h1 class="title">Biodiversity.<br>Play, decide<br>and learn.</h1>
+      <p class="lead">A Trivial-style Airbus challenge with categories, wedges, dice, teams and applied biodiversity questions for industrial settings.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="startBtn">Start game</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset board</button>
+      </div>
+      <div class="statgrid">
+        <div class="stat"><strong>24</strong><span>Board cells</span></div>
+        <div class="stat"><strong>50</strong><span>Question cards</span></div>
+        <div class="stat"><strong>5</strong><span>Knowledge areas</span></div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <section class="card board-shell">
+      <div class="board-frame">
+        <div class="board-title">
+          <div class="eyebrow">Mission biodiversity</div>
+          <h2>Board rebuilt<br>from scratch</h2>
+          <p>Stable SVG board, clear cells and working turns.</p>
+        </div>
+        <svg id="boardSvg" viewBox="0 0 720 720" aria-label="Trivia board"></svg>
+        <div class="board-note">Roll the die, move clockwise, answer a question from the category colour and collect the five wedges before the other team.</div>
+      </div>
+    </section>
+
+    <aside class="card panel">
+      <div class="turn-card">
+        <div class="eyebrow">Turn manager</div>
+        <div class="turn-head">
+          <h3 id="turnTitle">Team Alpha to play</h3>
+          <span class="pill" id="turnCategory">Waiting</span>
+        </div>
+        <p id="turnSubtitle">Press Start game to begin the round.</p>
+        <div class="dice-row">
+          <div class="die" id="dieFace">–</div>
+          <button class="btn btn-primary" id="rollBtn">Roll die</button>
+        </div>
+        <div class="status" id="statusBox">Waiting to start the round.</div>
+        <div id="winBanner" class="win-banner hidden"></div>
+      </div>
+
+      <div class="score-card">
+        <div class="eyebrow">Live scoreboard</div>
+        <div class="team-list" id="teamList"></div>
+      </div>
+
+      <div class="rules-card">
+        <div class="eyebrow">How it works</div>
+        <h3>Fast guide</h3>
+        <ol class="rule-list">
+          <li>Roll the die and move clockwise.</li>
+          <li>Answer a question from the landing category.</li>
+          <li>If the answer is correct, you earn that wedge colour.</li>
+          <li>The first team to collect all five wedges wins.</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="overlay" id="questionOverlay">
+  <div class="modal">
+    <div class="modal-grid">
+      <div class="modal-left">
+        <div class="eyebrow">Question time</div>
+        <div class="question-head">
+          <h3 id="qTeam">Team Alpha</h3>
+          <span class="pill" id="qCategory">Category</span>
+        </div>
+        <div class="question-text" id="qText">Question</div>
+        <p class="question-help">Select the most accurate answer. If you get it right, your team earns the wedge for this category.</p>
+      </div>
+      <div class="modal-right">
+        <div class="answers" id="answers"></div>
+        <div class="feedback-box" id="feedbackBox">
+          <h4 id="feedbackTitle"></h4>
+          <p id="feedbackText"></p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary hidden" id="nextTurnBtn">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="rulesOverlay">
+  <div class="modal" style="max-width:760px">
+    <div class="panel">
+      <div class="eyebrow">Rules</div>
+      <h2 style="font-family:Manrope,Inter,sans-serif;font-size:42px;line-height:.96;letter-spacing:-.04em;margin:10px 0 16px">How to play Trivia Airbus Quest</h2>
+      <ol class="rule-list" style="font-size:16px">
+        <li>Two teams alternate turns.</li>
+        <li>Each turn starts by rolling a 1–6 die.</li>
+        <li>The landing colour determines the question category.</li>
+        <li>A correct answer unlocks that wedge for the team.</li>
+        <li>Wedges are not duplicated: once collected, that colour stays active.</li>
+        <li>The first team to complete all five wedges wins immediately.</li>
+      </ol>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="closeRulesBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [{"id": 1, "pregunta": "What best describes biodiversity?", "opciones": ["The number of trees in a forest", "The variety of living beings, their genes and the ecosystems where they live", "Only endangered animals", "The area covered by protected natural spaces"], "correcta": 1, "explicacion": "Biodiversity includes species diversity, genetic diversity and ecosystem diversity.", "categoria": "Ecosystems", "nivel": "Basic"}, {"id": 2, "pregunta": "Which of these actions usually benefits biodiversity the most in an industrial setting?", "opciones": ["Replacing green areas with paving", "Planting only ornamental grass", "Creating areas with diverse native vegetation", "Removing all vegetation"], "correcta": 2, "explicacion": "Diverse native vegetation provides food, shelter and ecological connectivity.", "categoria": "Solutions", "nivel": "Basic"}, {"id": 3, "pregunta": "What is an invasive species?", "opciones": ["A local species that increases in spring", "An introduced species that can displace native ones", "An endangered species", "A species protected by law"], "correcta": 1, "explicacion": "Invasive species can spread quickly and cause ecological, economic or health impacts.", "categoria": "Species", "nivel": "Basic"}, {"id": 4, "pregunta": "Why can a temporary pond be valuable for biodiversity?", "opciones": ["Because it is always paved and clean", "Because it only serves to store industrial water", "Because it can function as a microhabitat for amphibians, insects and birds", "Because it prevents any vegetation from growing"], "correcta": 2, "explicacion": "Temporary ponds create important microhabitats for many organisms.", "categoria": "Ecosystems", "nivel": "Basic"}, {"id": 5, "pregunta": "Which of these factors can harm biodiversity on an industrial site?", "opciones": ["The presence of native plants", "Night-time light pollution", "Installing wildlife shelters", "Restoring degraded soils"], "correcta": 1, "explicacion": "Light pollution alters biological cycles, orientation and behaviour in many species.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 6, "pregunta": "What benefit can a green roof bring to buildings or facilities?", "opciones": ["It completely eliminates aircraft noise", "It reduces the heat-island effect and improves local ecological conditions", "It replaces the building’s entire environmental management system", "It prevents the presence of any insects"], "correcta": 1, "explicacion": "Green roofs can reduce surface temperature and provide ecological value when well designed.", "categoria": "Solutions", "nivel": "Intermediate"}, {"id": 7, "pregunta": "In ecological restoration, what does prioritising native species mean?", "opciones": ["Choosing species for their striking colour", "Selecting species that are native to the region and adapted to the environment", "Choosing fast-growing exotic plants", "Using only one species"], "correcta": 1, "explicacion": "Native species are usually better adapted to the local climate, soil and ecological interactions.", "categoria": "Species", "nivel": "Intermediate"}, {"id": 8, "pregunta": "Which biological indicator can help assess the ecological recovery of a soil?", "opciones": ["The colour of the building paint", "The number of parking spaces", "The presence of macroinvertebrates or other bioindicator organisms", "The size of the main building"], "correcta": 2, "explicacion": "Bioindicators help detect changes in the ecological quality of soil and ecosystems.", "categoria": "Environmental Indicators", "nivel": "Intermediate"}, {"id": 9, "pregunta": "Which of these practices comes closest to greenwashing?", "opciones": ["Restoring a degraded area with ecological monitoring", "Installing nest boxes and assessing their use", "Communicating a big green action without real measures or verifiable results", "Reducing pesticide use and measuring the effects"], "correcta": 2, "explicacion": "Greenwashing means projecting a positive environmental image without real, sufficient or demonstrable actions behind it.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 10, "pregunta": "Why is ecological connectivity important in fragmented landscapes?", "opciones": ["Because it reduces the need to assess impacts", "Because it allows species to move and improves resilience", "Because it replaces all conservation plans", "Because it removes the need for green areas"], "correcta": 1, "explicacion": "Ecological connectivity helps species move and maintain viable populations.", "categoria": "Ecosystems", "nivel": "Intermediate"}, {"id": 11, "pregunta": "What effect can soil sealing have on biodiversity?", "opciones": ["It improves water infiltration", "It reduces ecological soil functions and makes life harder for many species", "It encourages natural regeneration", "It is unrelated"], "correcta": 1, "explicacion": "Soil sealing reduces infiltration, gas exchange and biological activity.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 12, "pregunta": "What is one of the main benefits of maintaining hedgerows or vegetated strips on an industrial site?", "opciones": ["Increasing pesticide use", "Supporting ecological corridors and shelter for wildlife", "Eliminating the need for environmental management", "Replacing any other measure"], "correcta": 1, "explicacion": "Hedgerows and vegetated strips help connect habitats and provide shelter.", "categoria": "Solutions", "nivel": "Intermediate"}, {"id": 13, "pregunta": "Which group of organisms often plays a key role as pollinators?", "opciones": ["Concrete and aggregates", "Bees, butterflies and other insects", "Only birds of prey", "Only fungi"], "correcta": 1, "explicacion": "Many insects are essential for pollination.", "categoria": "Species", "nivel": "Basic"}, {"id": 14, "pregunta": "Which practice is most suitable for restoring a degraded area within an industrial facility?", "opciones": ["Covering it completely with decorative gravel", "Introducing fast-growing exotic species", "Analysing the site and restoring it with suitable native species", "Leaving it isolated"], "correcta": 2, "explicacion": "Effective restoration requires analysing site conditions and using suitable native species.", "categoria": "Solutions", "nivel": "Intermediate"}, {"id": 15, "pregunta": "Why are insects important in ecosystems besides pollination?", "opciones": ["Because they fully replace birds", "Because they do not participate in food webs", "Because they contribute to decomposition, feeding relationships and ecological balance", "Because they only have aesthetic value"], "correcta": 2, "explicacion": "Insects are part of many ecological processes.", "categoria": "Ecosystems", "nivel": "Basic"}, {"id": 16, "pregunta": "Which of these measures best helps reduce risk to wildlife in industrial facilities?", "opciones": ["Increasing intense lighting all night", "Designing preventive measures and adapting infrastructure", "Removing all nearby vegetation", "Closing off every space with ecological potential"], "correcta": 1, "explicacion": "Prevention through design and infrastructure adaptation reduces risks for wildlife.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 17, "pregunta": "What is a bioindicator?", "opciones": ["A mandatory legal document", "A species or organism whose presence provides information about environmental quality", "An efficient lighting system", "A technique for waterproofing soil"], "correcta": 1, "explicacion": "Bioindicators help interpret the ecological condition of an environment.", "categoria": "Environmental Indicators", "nivel": "Intermediate"}, {"id": 18, "pregunta": "In biodiversity terms, what does habitat fragmentation mean?", "opciones": ["Improved connectivity", "The division of a habitat into smaller, more isolated areas", "The natural appearance of new species", "The complete restoration of an ecosystem"], "correcta": 1, "explicacion": "Fragmentation makes it harder for species to move and reduces connectivity.", "categoria": "Ecosystems", "nivel": "Intermediate"}, {"id": 19, "pregunta": "Which approach best fits rigorous biodiversity management in a company?", "opciones": ["Carrying out one-off actions with no follow-up", "Communicating general commitments without verifiable measures", "Setting objectives, acting, measuring results and adjusting actions", "Limiting action to one annual campaign"], "correcta": 2, "explicacion": "Rigorous management requires planning, implementation, indicators, monitoring and continuous improvement.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 20, "pregunta": "Which of these statements best describes a nature-based solution?", "opciones": ["A measure that uses ecological processes to solve environmental challenges and create multiple benefits", "Any green decoration in an office", "An action focused only on corporate image", "An intervention unrelated to the ecological context"], "correcta": 0, "explicacion": "Nature-based solutions harness ecological functions to address environmental challenges.", "categoria": "Solutions", "nivel": "Intermediate"}, {"id": 21, "pregunta": "What impact does soil compaction have in an industrial environment?", "opciones": ["It improves soil biodiversity", "It increases aeration and infiltration", "It reduces porosity and negatively affects soil organisms", "It has no ecological impact"], "correcta": 2, "explicacion": "Compaction reduces the air and water spaces in soil.", "categoria": "Environmental Indicators", "nivel": "Intermediate"}, {"id": 22, "pregunta": "What is the main objective of an ecological corridor?", "opciones": ["To separate ecosystems completely", "To facilitate the movement of species between habitats", "To reduce local biodiversity", "To increase urbanisation"], "correcta": 1, "explicacion": "Ecological corridors connect fragmented habitats.", "categoria": "Ecosystems", "nivel": "Intermediate"}, {"id": 23, "pregunta": "Which indicator is most useful for evaluating biodiversity in an area?", "opciones": ["Number of nearby buildings", "Diversity of species present", "Amount of operating machinery", "Annual electricity consumption"], "correcta": 1, "explicacion": "Species diversity is a key indicator of biodiversity status.", "categoria": "Environmental Indicators", "nivel": "Basic"}, {"id": 24, "pregunta": "What effect does intensive pesticide use have on biodiversity?", "opciones": ["It increases species diversity", "It has no impact", "It can negatively affect non-target species", "It improves pollination"], "correcta": 2, "explicacion": "Pesticides can affect beneficial insects and other non-target organisms.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 25, "pregunta": "What characteristic defines a resilient ecosystem?", "opciones": ["It never changes", "It recovers after disturbances", "It has a single dominant species", "It does not need water"], "correcta": 1, "explicacion": "Resilience is the capacity of an ecosystem to recover.", "categoria": "Ecosystems", "nivel": "Intermediate"}, {"id": 26, "pregunta": "What role do soil microorganisms play?", "opciones": ["No relevant role", "They only degrade artificial materials", "They take part in nutrient cycling and decomposition", "They remove the need for plants"], "correcta": 2, "explicacion": "Microorganisms are key in biogeochemical cycles and soil fertility.", "categoria": "Ecosystems", "nivel": "Intermediate"}, {"id": 27, "pregunta": "Which is a good practice to support biodiversity in industrial green areas?", "opciones": ["Uniform lawns with frequent mowing", "Diversifying plant species and using differentiated management", "Completely removing spontaneous vegetation", "Intensive herbicide use"], "correcta": 1, "explicacion": "Plant diversity and adaptive management support richer, more functional habitats.", "categoria": "Solutions", "nivel": "Intermediate"}, {"id": 28, "pregunta": "What risk does artificial lighting pose to wildlife?", "opciones": ["None", "It improves natural behaviour", "It alters biological cycles and activity patterns", "It increases reproduction"], "correcta": 2, "explicacion": "Artificial light can disorient species and affect circadian rhythms.", "categoria": "Industry & Airbus", "nivel": "Intermediate"}, {"id": 29, "pregunta": "What is genetic diversity?", "opciones": ["The number of ecosystems in a region", "Genetic variability within a species", "The number of different species", "The number of individuals in a population"], "correcta": 1, "explicacion": "Genetic diversity allows adaptation and survival in the face of environmental change.", "categoria": "Species", "nivel": "Intermediate"}, {"id": 30, "pregunta": "Which is a sign of ecological recovery in a restored area?", "opciones": ["A total absence of life", "The gradual return of different species", "The elimination of all insects", "An increase in paved surfaces"], "correcta": 1, "explicacion": "The progressive recolonisation by species indicates ecological improvement.", "categoria": "Environmental Indicators", "nivel": "Intermediate"}, {"id": 31, "pregunta": "In an ecological restoration project, which criterion is key before intervening?", "opciones": ["Choosing species for aesthetics", "Analysing soil, climate and surrounding conditions", "Planting as many species as possible", "Minimising cost without a prior study"], "correcta": 1, "explicacion": "A prior diagnosis is essential to ensure restoration success.", "categoria": "Solutions", "nivel": "Expert"}, {"id": 32, "pregunta": "Which metric makes it possible to assess the ecological quality of a habitat beyond the number of species?", "opciones": ["Number of workers in the area", "Diversity indices such as Shannon or Simpson", "Total paved area", "Number of buildings"], "correcta": 1, "explicacion": "Diversity indices consider both species richness and relative abundance.", "categoria": "Environmental Indicators", "nivel": "Expert"}, {"id": 33, "pregunta": "What is the risk of introducing non-native species in restoration?", "opciones": ["Greater ecosystem stability", "No relevant impact", "Displacement of native species and disruption of ecological balance", "Automatic improvement of biodiversity"], "correcta": 2, "explicacion": "Non-native species can become invasive.", "categoria": "Species", "nivel": "Expert"}, {"id": 34, "pregunta": "Which approach best represents continuous improvement in biodiversity?", "opciones": ["Acting once with no follow-up", "Measuring, evaluating and adjusting actions regularly", "Running communication campaigns only", "Avoiding any intervention"], "correcta": 1, "explicacion": "Continuous improvement involves monitoring, measurement and adaptation.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 35, "pregunta": "What role do green infrastructures play in industrial environments?", "opciones": ["A purely decorative one", "Reducing biodiversity", "Integrating ecological functions such as thermal regulation and habitat", "Eliminating the need for environmental management"], "correcta": 2, "explicacion": "Green infrastructures provide both ecological and functional benefits.", "categoria": "Solutions", "nivel": "Expert"}, {"id": 36, "pregunta": "Which factor is critical to maintain viable wildlife populations?", "opciones": ["Complete isolation", "Habitat fragmentation", "Availability of resources and connectivity", "Removal of vegetation"], "correcta": 2, "explicacion": "Species need food, shelter and connectivity in order to survive.", "categoria": "Ecosystems", "nivel": "Expert"}, {"id": 37, "pregunta": "Which indicator can warn of an ecological imbalance?", "opciones": ["A controlled increase in biodiversity", "Excessive dominance of a single species", "An increase in native species", "Population stability"], "correcta": 1, "explicacion": "One overly dominant species can indicate a loss of ecological balance.", "categoria": "Environmental Indicators", "nivel": "Expert"}, {"id": 38, "pregunta": "Which strategy is most effective for integrating biodiversity into a company?", "opciones": ["Isolated actions with no coordination", "Integration into corporate strategy and KPIs", "External communication only", "Avoiding measurement of results"], "correcta": 1, "explicacion": "Strategic integration enables real and lasting impact.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 39, "pregunta": "What is the relationship between biodiversity and climate resilience?", "opciones": ["None", "Biodiversity reduces the capacity to adapt", "Greater biodiversity usually increases resilience to change", "It only affects marine ecosystems"], "correcta": 2, "explicacion": "Diverse ecosystems are generally more resistant to climate-related disturbances.", "categoria": "Ecosystems", "nivel": "Expert"}, {"id": 40, "pregunta": "Which approach avoids greenwashing in biodiversity?", "opciones": ["Communicating without data", "Carrying out symbolic actions", "Defining indicators, measuring impact and reporting results", "Limiting action to environmental marketing"], "correcta": 2, "explicacion": "Transparency and measurement are key to avoiding greenwashing.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 41, "pregunta": "In an industrial environment, which decision would have the greatest real positive impact on biodiversity?", "opciones": ["Installing decorative green features in offices", "Creating an integrated plan with restoration, monitoring and KPIs", "Publishing environmental communication campaigns", "Carrying out one symbolic annual action"], "correcta": 1, "explicacion": "Integrated actions with monitoring and indicators create real, measurable impact.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 42, "pregunta": "If no new species appear in a restored area after some time, what would be most appropriate?", "opciones": ["Consider the project successful anyway", "Abandon the area", "Reassess ecological conditions and adjust the measures", "Remove the existing vegetation"], "correcta": 2, "explicacion": "A lack of biological response indicates that the intervention needs to be reviewed and adapted.", "categoria": "Solutions", "nivel": "Expert"}, {"id": 43, "pregunta": "Which indicator would best reflect the success of a green corridor at Airbus Getafe?", "opciones": ["Number of meetings held", "Increase in species and wildlife use of the space", "Nearby paved area", "Number of internal posts"], "correcta": 1, "explicacion": "Actual use of the corridor by wildlife and increased biodiversity are key indicators.", "categoria": "Environmental Indicators", "nivel": "Expert"}, {"id": 44, "pregunta": "Which approach is most appropriate when an invasive species is present on site?", "opciones": ["Ignore it", "Remove it without analysis", "Assess its impact and apply appropriate control measures", "Promote its spread"], "correcta": 2, "explicacion": "Management should be based on technical assessment and specific measures.", "categoria": "Species", "nivel": "Expert"}, {"id": 45, "pregunta": "Which decision best reflects environmental leadership in a company?", "opciones": ["Acting only when there are audits", "Implementing proactive measures based on evidence", "Limiting action to minimum legal compliance", "Avoiding investment in sustainability"], "correcta": 1, "explicacion": "Leadership means anticipating issues and acting on a scientific basis.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 46, "pregunta": "Which combination of factors most supports biodiversity on an industrial site?", "opciones": ["Intense lighting and uniform lawn", "Native vegetation, connectivity and adaptive management", "Elimination of wildlife", "A completely sealed surface"], "correcta": 1, "explicacion": "The combination of suitable habitat, connectivity and management is key.", "categoria": "Solutions", "nivel": "Expert"}, {"id": 47, "pregunta": "Which indicator can anticipate ecological deterioration before it becomes visible?", "opciones": ["Number of emails sent", "Changes in bioindicator communities", "Number of meetings", "Colour of buildings"], "correcta": 1, "explicacion": "Bioindicators detect early changes in the ecosystem.", "categoria": "Environmental Indicators", "nivel": "Expert"}, {"id": 48, "pregunta": "Which approach is most effective for raising employee awareness about biodiversity?", "opciones": ["Long documents with no interaction", "Hands-on experiences, games and active participation", "Regulations only", "One-off annual communication"], "correcta": 1, "explicacion": "Active participation improves understanding, retention and commitment.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 49, "pregunta": "What is the most common mistake in corporate biodiversity projects?", "opciones": ["Measuring results", "Acting without diagnosis or follow-up", "Using native species", "Integrating biodiversity into strategy"], "correcta": 1, "explicacion": "Without diagnosis and follow-up, actions lose effectiveness.", "categoria": "Industry & Airbus", "nivel": "Expert"}, {"id": 50, "pregunta": "What defines the real success of a corporate biodiversity strategy?", "opciones": ["The number of communication campaigns", "Measurable, lasting impact aligned with strategy", "Isolated actions", "Cost reduction only"], "correcta": 1, "explicacion": "Success is based on real, measurable impact aligned with the business strategy.", "categoria": "Industry & Airbus", "nivel": "Expert"}];
+const CATEGORIES = [
+  { key: 'Species', color: '#63b7ff', short: 'S', desc: 'Flora, fauna, native and invasive species' },
+  { key: 'Ecosystems', color: '#eab54d', short: 'E', desc: 'Habitats, resilience and ecological connectivity' },
+  { key: 'Solutions', color: '#69d69a', short: 'N', desc: 'Restoration, nature-based solutions and action' },
+  { key: 'Environmental Indicators', color: '#ae9cff', short: 'I', desc: 'Metrics, bioindicators and monitoring' },
+  { key: 'Industry & Airbus', color: '#ff8ea4', short: 'A', desc: 'Application to industrial and Airbus settings' }
+];
+const HQ_POSITIONS = [0,5,10,15,20];
+const boardCells = Array.from({length:24}, (_, i) => ({
+  id: i,
+  number: i+1,
+  category: CATEGORIES[i % CATEGORIES.length].key,
+  catIndex: i % CATEGORIES.length,
+  hq: HQ_POSITIONS.includes(i)
+}));
+
+const state = {
+  started: false,
+  waitingQuestion: false,
+  gameOver: false,
+  activeTeam: 0,
+  currentQuestion: null,
+  lastRoll: null,
+  teams: [
+    { name: 'Team Alpha', color: '#78ddff', pos: 0, wedges: {}, correct: 0 },
+    { name: 'Team Bravo', color: '#73f2b7', pos: 0, wedges: {}, correct: 0 }
+  ]
+};
+
+const legend = document.getElementById('legend');
+const teamList = document.getElementById('teamList');
+const boardSvg = document.getElementById('boardSvg');
+const statusBox = document.getElementById('statusBox');
+const dieFace = document.getElementById('dieFace');
+const turnTitle = document.getElementById('turnTitle');
+const turnSubtitle = document.getElementById('turnSubtitle');
+const turnCategory = document.getElementById('turnCategory');
+const winBanner = document.getElementById('winBanner');
+
+const questionOverlay = document.getElementById('questionOverlay');
+const qTeam = document.getElementById('qTeam');
+const qCategory = document.getElementById('qCategory');
+const qText = document.getElementById('qText');
+const answers = document.getElementById('answers');
+const feedbackBox = document.getElementById('feedbackBox');
+const feedbackTitle = document.getElementById('feedbackTitle');
+const feedbackText = document.getElementById('feedbackText');
+const nextTurnBtn = document.getElementById('nextTurnBtn');
+
+const rulesOverlay = document.getElementById('rulesOverlay');
+
+function escapeHtml(text){
+  return String(text)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#39;');
+}
+
+function initLegend(){
+  legend.innerHTML = CATEGORIES.map(cat => `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${cat.color}"></span>
+      <div><strong>${cat.key}</strong><span>${cat.desc}</span></div>
+    </div>
+  `).join('');
+}
+
+function getCategory(index){
+  return CATEGORIES[index % CATEGORIES.length];
+}
+
+function questionForCategory(category){
+  const pool = QUESTIONS.filter(q => q.categoria === category);
+  return pool[Math.floor(Math.random() * pool.length)] || QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+}
+
+function teamHasAllWedges(team){
+  return CATEGORIES.every(cat => team.wedges[cat.key]);
+}
+
+function renderTeams(){
+  teamList.innerHTML = state.teams.map((team, idx) => `
+    <div class="team ${idx === state.activeTeam ? 'active' : ''}">
+      <div class="team-token" style="background:${team.color}"></div>
+      <div>
+        <h4>${team.name}</h4>
+        <p>Cell ${team.pos + 1} · ${Object.keys(team.wedges).length}/5 wedges</p>
+        <div class="badges">
+          ${CATEGORIES.map(cat => `<span class="badge ${team.wedges[cat.key] ? 'on' : ''}" style="background:${cat.color};border-color:${cat.color}"></span>`).join('')}
+        </div>
+      </div>
+      <div class="team-score">${team.correct}</div>
+    </div>
+  `).join('');
+}
+
+function updateTurnPanel(){
+  const team = state.teams[state.activeTeam];
+  const cell = boardCells[team.pos];
+  turnTitle.textContent = `${team.name} to play`;
+  turnSubtitle.textContent = state.started
+    ? `${team.name} is on cell ${cell.number}. Current category: ${cell.category}.`
+    : 'Press Start game to begin the round.';
+  turnCategory.textContent = state.started ? cell.category : 'Waiting';
+}
+
+function polar(cx, cy, radius, angleDeg){
+  const rad = angleDeg * Math.PI / 180;
+  return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+}
+
+function renderBoard(){
+  const cx = 360, cy = 360;
+  const outerR = 250;
+  const ringR = 218;
+  const hubOuter = 88;
+  const hubInner = 56;
+  let svg = `
+    <defs>
+      <radialGradient id="boardGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(120,220,255,.55)"/>
+        <stop offset="45%" stop-color="rgba(120,220,255,.15)"/>
+        <stop offset="100%" stop-color="rgba(120,220,255,0)"/>
+      </radialGradient>
+      <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="rgba(0,0,0,.38)"/>
+      </filter>
+    </defs>
+    <circle cx="${cx}" cy="${cy}" r="310" fill="rgba(0,0,0,.08)"></circle>
+    <circle cx="${cx}" cy="${cy}" r="${outerR+16}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="2"></circle>
+    <circle cx="${cx}" cy="${cy}" r="${outerR-22}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1.5"></circle>
+    <circle cx="${cx}" cy="${cy}" r="150" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="2"></circle>
+    <circle cx="${cx}" cy="${cy}" r="98" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1.5"></circle>
+  `;
+
+  // spokes
+  HQ_POSITIONS.forEach(pos => {
+    const p = polar(cx, cy, ringR, -90 + (360 / 24) * pos);
+    svg += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,.08)" stroke-width="2" />`;
+  });
+
+  // center wheel
+  let startAngle = -90;
+  CATEGORIES.forEach(cat => {
+    const endAngle = startAngle + 72;
+    const p1 = polar(cx, cy, hubOuter, startAngle);
+    const p2 = polar(cx, cy, hubOuter, endAngle);
+    const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+    svg += `
+      <path d="M ${cx} ${cy} L ${p1.x} ${p1.y} A ${hubOuter} ${hubOuter} 0 ${largeArc} 1 ${p2.x} ${p2.y} Z"
+            fill="${cat.color}" opacity=".95"></path>
+    `;
+    startAngle = endAngle;
+  });
+  svg += `
+    <circle cx="${cx}" cy="${cy}" r="${hubInner}" fill="rgba(7,20,37,.95)"></circle>
+    <circle cx="${cx}" cy="${cy}" r="${hubInner-8}" fill="url(#boardGlow)"></circle>
+    <text x="${cx}" y="${cy+10}" text-anchor="middle" font-size="34" font-weight="800" fill="#fff">✦</text>
+  `;
+
+  boardCells.forEach((cell, i) => {
+    const angle = -90 + (360 / boardCells.length) * i;
+    const p = polar(cx, cy, ringR, angle);
+    const cat = CATEGORIES[cell.catIndex];
+    const r = cell.hq ? 33 : 24;
+    svg += `
+      <g filter="url(#softShadow)">
+        <circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${cat.color}" stroke="rgba(255,255,255,.22)" stroke-width="${cell.hq ? 4 : 3}"></circle>
+      </g>
+      <text x="${p.x}" y="${p.y - (cell.hq ? 4 : 2)}" text-anchor="middle" font-size="${cell.hq ? 16 : 13}" font-weight="800" fill="#fff">${cell.number}</text>
+      <text x="${p.x}" y="${p.y + (cell.hq ? 14 : 12)}" text-anchor="middle" font-size="${cell.hq ? 15 : 12}" font-weight="800" fill="rgba(255,255,255,.96)">${cell.hq ? '✦' : '•'}</text>
+    `;
+  });
+
+  // team tokens on cells
+  state.teams.forEach((team, idx) => {
+    const cell = boardCells[team.pos];
+    const angle = -90 + (360 / boardCells.length) * team.pos;
+    const p = polar(cx, cy, ringR, angle);
+    const tokenAngle = angle + (idx === 0 ? -18 : 18);
+    const offset = cell.hq ? 18 : 14;
+    const tokenPos = polar(p.x, p.y, offset, tokenAngle);
+    svg += `
+      <circle cx="${tokenPos.x}" cy="${tokenPos.y}" r="8" fill="${team.color}" stroke="#fff" stroke-width="2"></circle>
+    `;
+  });
+
+  boardSvg.innerHTML = svg;
+}
+
+function setStatus(message){
+  statusBox.textContent = message;
+}
+
+function startGame(){
+  state.started = true;
+  state.waitingQuestion = false;
+  state.gameOver = false;
+  state.activeTeam = 0;
+  state.lastRoll = null;
+  state.teams.forEach(team => {
+    team.pos = 0;
+    team.wedges = {};
+    team.correct = 0;
+  });
+  dieFace.textContent = '–';
+  winBanner.classList.add('hidden');
+  setStatus('Game ready. Team Alpha starts.');
+  updateTurnPanel();
+  renderTeams();
+  renderBoard();
+}
+
+function resetBoard(){
+  startGame();
+}
+
+function rollDie(){
+  if (!state.started || state.waitingQuestion || state.gameOver) return;
+  const roll = Math.floor(Math.random() * 6) + 1;
+  state.lastRoll = roll;
+  dieFace.textContent = roll;
+  const team = state.teams[state.activeTeam];
+  team.pos = (team.pos + roll) % boardCells.length;
+  const cell = boardCells[team.pos];
+  const category = CATEGORIES[cell.catIndex];
+  updateTurnPanel();
+  renderTeams();
+  renderBoard();
+  setStatus(`${team.name} rolled ${roll} and moved to cell ${cell.number} · ${category.key}.`);
+  openQuestion(team, category, cell);
+}
+
+function openQuestion(team, category, cell){
+  state.waitingQuestion = true;
+  const q = questionForCategory(category.key);
+  state.currentQuestion = { teamIndex: state.activeTeam, category, cell, q };
+  qTeam.textContent = team.name;
+  qCategory.textContent = `${category.key}${cell.hq ? ' · HQ cell' : ''}`;
+  qText.textContent = q.pregunta;
+  answers.innerHTML = q.opciones.map((opt, idx) => `
+    <button class="answer" data-index="${idx}">${String.fromCharCode(65+idx)}. ${escapeHtml(opt)}</button>
+  `).join('');
+  feedbackBox.className = 'feedback-box';
+  feedbackTitle.textContent = '';
+  feedbackText.textContent = '';
+  nextTurnBtn.classList.add('hidden');
+  questionOverlay.classList.add('show');
+  [...answers.querySelectorAll('.answer')].forEach(btn => btn.addEventListener('click', answerQuestion));
+}
+
+function answerQuestion(ev){
+  if (!state.currentQuestion) return;
+  const btn = ev.currentTarget;
+  const selected = Number(btn.dataset.index);
+  const { teamIndex, category, q } = state.currentQuestion;
+  const team = state.teams[teamIndex];
+  const correct = selected === q.correcta;
+
+  [...answers.querySelectorAll('.answer')].forEach(b => b.disabled = true);
+
+  if (correct) {
+    team.correct += 1;
+    team.wedges[category.key] = true;
+    feedbackBox.className = 'feedback-box show ok';
+    feedbackTitle.textContent = 'Correct answer';
+    feedbackText.textContent = `${q.explicacion} ${team.wedges[category.key] ? ` ${team.name} secures the ${category.key} wedge.` : ''}`;
+    setStatus(`${team.name} answered correctly and earned the ${category.key} wedge.`);
+  } else {
+    feedbackBox.className = 'feedback-box show ko';
+    feedbackTitle.textContent = 'Wrong answer';
+    feedbackText.textContent = `${q.explicacion} The correct option was ${String.fromCharCode(65 + q.correcta)}.`;
+    setStatus(`${team.name} missed the question in ${category.key}.`);
+  }
+
+  renderTeams();
+  renderBoard();
+
+  if (teamHasAllWedges(team)) {
+    state.gameOver = true;
+    winBanner.textContent = `${team.name} wins with all five wedges.`;
+    winBanner.classList.remove('hidden');
+  }
+
+  nextTurnBtn.classList.remove('hidden');
+}
+
+function continueAfterQuestion(){
+  questionOverlay.classList.remove('show');
+  state.waitingQuestion = false;
+  state.currentQuestion = null;
+  if (!state.gameOver) {
+    state.activeTeam = state.activeTeam === 0 ? 1 : 0;
+    updateTurnPanel();
+    renderTeams();
+  } else {
+    updateTurnPanel();
+  }
+}
+
+function openRules(){ rulesOverlay.classList.add('show'); }
+function closeRules(){ rulesOverlay.classList.remove('show'); }
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('resetBtn').addEventListener('click', resetBoard);
+document.getElementById('rollBtn').addEventListener('click', rollDie);
+document.getElementById('rulesBtn').addEventListener('click', openRules);
+document.getElementById('closeRulesBtn').addEventListener('click', closeRules);
+document.getElementById('homeBtn').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+nextTurnBtn.addEventListener('click', continueAfterQuestion);
+questionOverlay.addEventListener('click', e => { if (e.target === questionOverlay && !state.waitingQuestion) questionOverlay.classList.remove('show'); });
+rulesOverlay.addEventListener('click', e => { if (e.target === rulesOverlay) closeRules(); });
+
+initLegend();
+startGame();
+</script>
+</body>
+</html>
