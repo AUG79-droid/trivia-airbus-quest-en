@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trivia Airbus Quest</title>
+<style>
+  :root{
+    --bg:#090f2a;
+    --bg2:#0e1737;
+    --panel:#141c37;
+    --panel2:#1e2743;
+    --line:rgba(255,255,255,.09);
+    --text:#f4f7ff;
+    --muted:#a9b3cf;
+    --species:#35cf68;
+    --ecosystems:#4b8df0;
+    --solutions:#28c6c1;
+    --indicators:#f2be1c;
+    --threats:#ea4c9b;
+    --airbus:#28bfe7;
+    --alpha:#ff5a57;
+    --bravo:#a660ff;
+    --charlie:#4be39d;
+    --delta:#7ad4ff;
+    --action:#2fd5c5;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 12% 12%, rgba(40,191,231,.18), transparent 22%),
+      radial-gradient(circle at 86% 18%, rgba(53,207,104,.14), transparent 18%),
+      linear-gradient(180deg,#060b1f 0%, #09122b 30%, #060b1f 100%);
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none;
+    background:
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size:32px 32px;
+    opacity:.28;
+  }
+  .hidden{display:none !important}
+  .shell{max-width:1180px; margin:0 auto; padding:14px 16px 22px; position:relative; z-index:1}
+  .topbar{
+    height:62px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px; margin-bottom:18px;
+    background:rgba(8,17,40,.82); border:1px solid var(--line); border-radius:22px;
+    box-shadow:0 16px 36px rgba(0,0,0,.25);
+  }
+  .brand{font-size:17px; font-weight:800; letter-spacing:-.02em}
+  .navbtns{display:flex; gap:10px}
+  .chipbtn{
+    border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); color:#fff;
+    border-radius:14px; padding:10px 14px; font-weight:700; cursor:pointer;
+  }
+
+  /* Setup */
+  .setup-wrap{min-height:calc(100vh - 40px); display:grid; place-items:center; padding:28px 16px}
+  .setup-card{
+    width:min(410px,100%); background:linear-gradient(180deg, rgba(26,31,55,.96), rgba(18,24,48,.98));
+    border:1px solid var(--line); border-radius:18px; padding:26px 24px 26px;
+    box-shadow:0 24px 64px rgba(0,0,0,.35);
+  }
+  .logo{font-weight:900; font-size:28px; line-height:1.05; text-align:center; margin:4px 0 2px}
+  .logo span:first-child{color:var(--action)}
+  .subtitle{text-align:center; color:var(--muted); margin-bottom:16px}
+  .cat-row{display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin:10px 0 22px}
+  .cat-dot{display:flex; flex-direction:column; align-items:center; gap:6px; font-size:10px; color:var(--muted)}
+  .dot{width:24px; height:24px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,.08) inset, 0 0 16px rgba(255,255,255,.08)}
+  .setup-label{font-size:14px; color:var(--muted); margin:4px 0 10px}
+  .player-count{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px}
+  .count-btn{
+    padding:12px 0; border-radius:12px; border:1px solid var(--line); background:#242a44; color:#dbe4ff; font-weight:800; cursor:pointer;
+  }
+  .count-btn.active{background:#2bbdb3; color:#fff}
+  .inputs{display:grid; gap:10px; margin-bottom:18px}
+  .input-row{display:flex; align-items:center; gap:12px}
+  .player-color{width:14px; height:14px; border-radius:50%; flex:none}
+  input[type="text"]{
+    width:100%; background:#3a3f59; border:1px solid transparent; color:#fff; border-radius:12px;
+    padding:10px 14px; font-size:15px; outline:none;
+  }
+  input[type="text"]:focus{border-color:rgba(122,212,255,.6)}
+  .start-main{
+    width:100%; border:0; background:#2db8af; color:#fff; font-size:24px; font-weight:900; cursor:pointer;
+    padding:14px 18px; border-radius:13px;
+  }
+
+  /* Home / game */
+  #gameScreen .layout{
+    display:grid; grid-template-columns:180px minmax(420px, 1fr) 180px; gap:14px; align-items:start;
+  }
+  .panel{background:linear-gradient(180deg, rgba(21,28,55,.98), rgba(14,19,40,.98)); border:1px solid var(--line); border-radius:16px}
+  .sidebar{padding:0}
+  .side-title{padding:14px 16px 10px; font-size:11px; font-weight:800; letter-spacing:.14em; color:#8ea2d2; text-transform:uppercase}
+  .ranking table{width:100%; border-collapse:collapse; font-size:12px; color:#dbe6ff}
+  .ranking td{padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.06)}
+  .ranking tr:last-child td{border-bottom:0}
+  .rank-num{width:18px; color:#8ea2d2}
+  .score-cell{text-align:right; color:#9db7ff; font-weight:800}
+  .player-card{margin:10px 8px; padding:12px; background:rgba(255,255,255,.03); border:1px solid transparent; border-radius:14px}
+  .player-card.active{border-color:rgba(77,228,179,.55); background:rgba(255,255,255,.06)}
+  .p-head{display:flex; justify-content:space-between; gap:8px; align-items:center; margin-bottom:10px}
+  .p-name{display:flex; align-items:center; gap:8px; font-weight:800; font-size:14px}
+  .arrow{color:#4be39d; font-size:12px}
+  .wedge-wheel{width:36px;height:36px;border-radius:50%; background:conic-gradient(from -90deg, rgba(255,255,255,.06) 0 60deg, rgba(255,255,255,.06) 60deg 120deg, rgba(255,255,255,.06) 120deg 180deg, rgba(255,255,255,.06) 180deg 240deg, rgba(255,255,255,.06) 240deg 300deg, rgba(255,255,255,.06) 300deg 360deg); border:2px solid rgba(255,255,255,.08)}
+  .wedge-row{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px}
+
+  .center-col{display:grid; gap:14px}
+  .hero-board{display:grid; grid-template-columns:260px minmax(360px,1fr); gap:18px; padding:18px}
+  .hero-copy h1{font-size:42px; line-height:.92; letter-spacing:-.05em; margin:6px 0 10px}
+  .hero-copy p{color:#c5d1ee; line-height:1.65; margin:0 0 16px}
+  .eyebrow{font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#9bc0ff}
+  .hero-actions{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap}
+  .btn-primary,.btn-secondary,.btn-roll,.btn-answer,.btn-small{
+    border:0; cursor:pointer; font-weight:800; border-radius:14px;
+  }
+  .btn-primary{background:#75efbb; color:#0d1f2b; padding:12px 16px}
+  .btn-secondary{background:#34425f; color:#fff; padding:12px 16px; border:1px solid rgba(255,255,255,.08)}
+  .metrics{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px}
+  .metric{padding:14px 14px 12px; background:linear-gradient(180deg,#1c2749,#151d38); border:1px solid rgba(255,255,255,.07); border-radius:16px}
+  .metric strong{display:block; font-size:20px; margin-bottom:4px}
+  .metric span{display:block; font-size:11px; text-transform:uppercase; letter-spacing:.16em; color:#a4b2d6}
+  .legend{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  .legend-item{display:flex; gap:10px; padding:12px; background:linear-gradient(180deg,#172445,#121a34); border:1px solid rgba(255,255,255,.07); border-radius:14px}
+  .legend-item .dot{width:12px;height:12px; margin-top:4px; box-shadow:none}
+  .legend-item h4{margin:0 0 2px; font-size:13px}
+  .legend-item p{margin:0; font-size:11px; color:#b7c3e1; line-height:1.35}
+
+  .board-panel{padding:0; min-height:600px; display:grid; place-items:center; position:relative; overflow:hidden}
+  .board-shell{width:min(100%,540px); aspect-ratio:1/1; display:grid; place-items:center; position:relative; margin:0 auto}
+  .board-caption{position:absolute; left:22px; top:18px; z-index:2}
+  .board-caption h3{margin:0; font-size:18px}
+  .board-caption p{margin:6px 0 0; color:#c6d3ef; font-size:14px; line-height:1.4; max-width:190px}
+  svg{display:block; width:100%; height:auto}
+
+  .turn-panel{padding:12px}
+  .turn-card{padding:14px; background:linear-gradient(180deg,#243252,#202b48); border:1px solid rgba(255,255,255,.07); border-radius:18px}
+  .turn-badge{display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); font-size:11px; font-weight:800; text-transform:uppercase; margin-left:auto}
+  .turn-top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start; margin-bottom:10px}
+  .turn-name{font-size:15px; font-weight:900; line-height:1.1}
+  .turn-meta{color:#c4d0eb; font-size:12px; line-height:1.45; margin-bottom:12px}
+  .roll-row{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px}
+  .die{width:68px; height:68px; border-radius:16px; background:linear-gradient(180deg,#4b5873,#36415a); border:1px solid rgba(255,255,255,.12); display:grid; place-items:center; font-size:22px; font-weight:900}
+  .btn-roll{background:#75efbb; color:#0d1f2b; padding:14px 18px}
+  .msg{padding:14px; border-radius:14px; background:rgba(255,255,255,.06); color:#f0f5ff; line-height:1.45; min-height:72px}
+  .stat-grid{display:grid; grid-template-columns:1fr auto; gap:6px 14px; font-size:13px; margin-top:14px}
+  .stat-grid .label{color:#a8b6d8}
+  .stat-grid .value{font-weight:800}
+  .mini-wedges{display:flex; gap:6px}
+  .mini-wedge{width:11px;height:11px;border-radius:50%;opacity:.22}
+  .mini-wedge.on{opacity:1; box-shadow:0 0 0 2px rgba(255,255,255,.08)}
+
+  .guide{padding:14px; margin-top:12px}
+  .guide h3{margin:0 0 8px; font-size:15px}
+  .guide ol{margin:0 0 0 18px; color:#d9e2fb; line-height:1.45; font-size:13px}
+
+  /* Modal */
+  .overlay{position:fixed; inset:0; background:rgba(3,6,18,.72); display:grid; place-items:center; padding:20px; z-index:40}
+  .modal{width:min(720px,100%); background:linear-gradient(180deg,#111a35,#0d1430); border:1px solid rgba(255,255,255,.08); border-radius:22px; padding:20px; box-shadow:0 30px 80px rgba(0,0,0,.46)}
+  .modal h2{margin:8px 0 8px; font-size:28px; line-height:1.05}
+  .modal p{color:#d0daf3; line-height:1.6}
+  .answer-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:18px}
+  .btn-answer{padding:16px; background:#1b2647; color:#f4f7ff; text-align:left; border:1px solid rgba(255,255,255,.08); min-height:88px}
+  .btn-answer:hover{background:#23325c}
+  .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:16px}
+  .btn-small{padding:10px 14px; background:#34425f; color:#fff}
+  .feedback{margin-top:14px; padding:14px; border-radius:14px; line-height:1.5}
+  .feedback.ok{background:rgba(53,207,104,.16); border:1px solid rgba(53,207,104,.35)}
+  .feedback.ko{background:rgba(234,76,155,.16); border:1px solid rgba(234,76,155,.35)}
+
+  @media (max-width:1100px){
+    #gameScreen .layout{grid-template-columns:1fr;}
+    .hero-board{grid-template-columns:1fr;}
+    .board-panel{min-height:auto;padding-bottom:24px}
+  }
+  @media (max-width:720px){
+    .hero-copy h1{font-size:32px}
+    .metrics,.legend,.answer-grid{grid-template-columns:1fr}
+    .shell{padding:12px}
+  }
+</style>
+</head>
+<body>
+<div id="setupScreen" class="setup-wrap">
+  <div class="setup-card">
+    <div class="logo"><span>Biodiver</span><span>Trivial</span></div>
+    <div class="subtitle">Airbus Edition</div>
+    <div class="cat-row" id="setupCats"></div>
+    <div class="setup-label">Number of players</div>
+    <div class="player-count">
+      <button class="count-btn active" data-count="2">2</button>
+      <button class="count-btn" data-count="3">3</button>
+      <button class="count-btn" data-count="4">4</button>
+    </div>
+    <div class="inputs" id="playerInputs"></div>
+    <button class="start-main" id="startGameBtn">Start game</button>
+  </div>
+</div>
+
+<div id="gameScreen" class="hidden">
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">Trivia Airbus Quest</div>
+      <div class="navbtns">
+        <button class="chipbtn" id="homeBtn">Home</button>
+        <button class="chipbtn" id="rulesBtn">Rules</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="panel ranking">
+          <div class="side-title">Ranking</div>
+          <table id="rankingTable"></table>
+        </section>
+        <section class="panel">
+          <div class="side-title">Players</div>
+          <div id="playerCards"></div>
+        </section>
+      </aside>
+
+      <main class="center-col">
+        <section class="panel hero-board">
+          <div class="hero-copy">
+            <div class="eyebrow">Board game · English version</div>
+            <h1>Biodiversity.<br>Play,<br>decide<br>and learn.</h1>
+            <p>A Trivial-style Airbus challenge with categories, wedges, dice, teams and applied biodiversity questions for industrial settings.</p>
+            <div class="hero-actions">
+              <button class="btn-primary" id="startRoundBtn">Start game</button>
+              <button class="btn-secondary" id="resetBtn">Reset board</button>
+            </div>
+            <div class="metrics">
+              <div class="metric"><strong>24</strong><span>Board cells</span></div>
+              <div class="metric"><strong>48</strong><span>Question cards</span></div>
+              <div class="metric"><strong>6</strong><span>Knowledge areas</span></div>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+
+          <div class="panel board-panel">
+            <div class="board-caption">
+              <div class="eyebrow">Mission biodiversity</div>
+              <h3>Roll, answer and collect the six wedges</h3>
+              <p>First team to complete all category wedges wins the game.</p>
+            </div>
+            <div class="board-shell">
+              <svg id="boardSvg" viewBox="0 0 720 720" aria-label="Board"></svg>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="sidebar">
+        <section class="panel turn-panel">
+          <div class="turn-card">
+            <div class="turn-top">
+              <div>
+                <div class="side-title" style="padding:0;margin-bottom:6px">Current turn</div>
+                <div class="turn-name" id="turnName">Team Alpha to play</div>
+              </div>
+              <div class="turn-badge" id="turnBadge">Species</div>
+            </div>
+            <div class="turn-meta" id="turnMeta">Game ready. Team Alpha starts.</div>
+            <div class="roll-row">
+              <div class="die" id="dieFace">—</div>
+              <button class="btn-roll" id="rollBtn">Roll die</button>
+            </div>
+            <div class="msg" id="logBox">Waiting to start the round.</div>
+            <div class="stat-grid">
+              <div class="label">Cell</div><div class="value" id="cellValue">Center</div>
+              <div class="label">Wedges</div><div class="value" id="wedgeValue">0/6</div>
+            </div>
+          </div>
+          <section class="panel guide">
+            <div class="side-title" style="padding:0 0 8px">How it works</div>
+            <h3>Fast guide</h3>
+            <ol>
+              <li>Roll the die and move clockwise.</li>
+              <li>Answer a question from the landing category.</li>
+              <li>A correct answer unlocks that category wedge.</li>
+              <li>First team with the six wedges wins.</li>
+            </ol>
+          </section>
+        </section>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div id="modalRoot" class="hidden"></div>
+
+<script>
+const CATEGORIES = [
+  { key:'species', label:'Species', color:getComputedStyle(document.documentElement).getPropertyValue('--species').trim(), desc:'Flora, fauna, native and invasive species' },
+  { key:'ecosystems', label:'Ecosystems', color:getComputedStyle(document.documentElement).getPropertyValue('--ecosystems').trim(), desc:'Habitats, resilience and ecological connectivity' },
+  { key:'solutions', label:'Solutions', color:getComputedStyle(document.documentElement).getPropertyValue('--solutions').trim(), desc:'Restoration, nature-based solutions and action' },
+  { key:'indicators', label:'Indicators', color:getComputedStyle(document.documentElement).getPropertyValue('--indicators').trim(), desc:'Metrics, bioindicators and monitoring' },
+  { key:'threats', label:'Threats', color:getComputedStyle(document.documentElement).getPropertyValue('--threats').trim(), desc:'Pollution, fragmentation and biodiversity pressure' },
+  { key:'airbus', label:'Airbus', color:getComputedStyle(document.documentElement).getPropertyValue('--airbus').trim(), desc:'Application to industrial and Airbus settings' },
+];
+const PLAYER_COLORS = ['var(--alpha)','var(--bravo)','var(--charlie)','var(--delta)'];
+
+const QUESTIONS = {
+  species:[
+    {q:'What best defines biodiversity?',o:['Only endangered animals','The variety of life, genes and ecosystems','The number of trees in one forest','Protected areas only'],a:1,e:'Biodiversity covers species diversity, genetic diversity and ecosystem diversity.'},
+    {q:'What is an invasive species?',o:['A protected native species','A local species that blooms in spring','An introduced species that can displace native species','Any species with many individuals'],a:2,e:'Invasive species can alter ecological balance and displace native organisms.'},
+    {q:'Why are pollinators important?',o:['They replace all seed dispersal','They support plant reproduction and ecosystem functioning','They only matter in agriculture','They reduce habitat fragmentation'],a:1,e:'Pollinators support flowering plant reproduction and many food webs.'},
+    {q:'What does genetic diversity help with?',o:['Reducing all competition','Improving adaptation to environmental change','Replacing ecosystem diversity','Eliminating disease risk completely'],a:1,e:'Genetic diversity increases resilience and adaptive capacity.'},
+    {q:'What is the best planting choice for an industrial green area?',o:['One ornamental exotic species','Artificial turf','A mix of native species adapted to the site','Bare gravel everywhere'],a:2,e:'Native diverse planting improves habitat value and ecological fit.'},
+    {q:'Why can temporary ponds matter for species conservation?',o:['They are always paved','They act as microhabitats for amphibians and insects','They prevent vegetation growth','They only store industrial water'],a:1,e:'Temporary ponds can be key habitats for amphibians, insects and birds.'},
+    {q:'Which group often acts as a bioindicator of habitat quality?',o:['Macroinvertebrates','Concrete blocks','Office furniture','Road paint'],a:0,e:'Macroinvertebrates and other living communities can reveal ecological condition.'},
+    {q:'Which action can reduce risk to wildlife?',o:['Intense night lighting','Infrastructure adapted to avoid traps and collisions','Removing all vegetation','Increasing sealed surfaces'],a:1,e:'Good design can reduce collisions, trapping and habitat disturbance.'}
+  ],
+  ecosystems:[
+    {q:'What is habitat fragmentation?',o:['Improving ecological connectivity','Dividing habitat into smaller isolated patches','Restoring a river corridor','Planting native shrubs'],a:1,e:'Fragmentation isolates populations and reduces movement between habitats.'},
+    {q:'Why is ecological connectivity important?',o:['It removes the need for monitoring','It allows species movement and supports resilience','It replaces all restoration work','It only matters underwater'],a:1,e:'Connectivity helps species disperse, feed and maintain viable populations.'},
+    {q:'What defines an ecosystem as resilient?',o:['It never changes','It recovers after disturbance','It has only one dominant species','It needs no water'],a:1,e:'Resilience is the ability to absorb disturbance and recover function.'},
+    {q:'What does soil sealing usually do?',o:['Improves infiltration','Reduces ecological soil functions','Increases earthworm abundance','Restores habitat'],a:1,e:'Sealing reduces infiltration, gas exchange and biological activity.'},
+    {q:'What do soil microorganisms do?',o:['Nothing relevant','Only degrade artificial materials','Support nutrient cycles and decomposition','Replace plants'],a:2,e:'Microorganisms are fundamental for soil fertility and cycling.'},
+    {q:'A hedge or vegetated strip in a plant site can mainly provide...',o:['Only decoration','A wildlife corridor and shelter','A substitute for all biodiversity work','More herbicide demand'],a:1,e:'Linear vegetation supports movement, shelter and foraging.'},
+    {q:'What is a corridor ecological objective?',o:['Separate habitats completely','Facilitate movement between habitats','Increase urban sealing','Reduce biodiversity locally'],a:1,e:'Corridors connect fragmented habitats.'},
+    {q:'Which sign suggests ecological recovery?',o:['No species return','Progressive recolonization by different species','More asphalt nearby','Permanent bare soil'],a:1,e:'Recovery is usually visible through recolonization and trophic return.'}
+  ],
+  solutions:[
+    {q:'What is a nature-based solution?',o:['Office decoration only','An action using ecological processes to solve challenges and create co-benefits','A communication campaign','A solution unrelated to ecology'],a:1,e:'Nature-based solutions harness ecological functions while delivering multiple benefits.'},
+    {q:'A good restoration project should start by...',o:['Choosing the prettiest species','Analysing soil, climate and site constraints','Buying as many plants as possible','Avoiding diagnosis'],a:1,e:'Diagnosis comes first: conditions drive the right intervention.'},
+    {q:'A green roof can help by...',o:['Ending all building impacts','Reducing heat and improving local habitat value','Eliminating all insects','Replacing environmental management'],a:1,e:'Green roofs can support cooling and habitat if well designed.'},
+    {q:'Which management style best supports biodiversity?',o:['Uniform lawn and frequent mowing','Diverse vegetation with differentiated management','Removing spontaneous plants always','Routine herbicide use'],a:1,e:'Differentiated management creates more niches and ecological structure.'},
+    {q:'If a restored area shows no biological response, the best next step is...',o:['Declare success anyway','Abandon the area','Review assumptions and adapt the intervention','Seal the soil'],a:2,e:'Adaptive management means revising the project when outcomes lag.'},
+    {q:'Which measure often helps pollinators?',o:['Night floodlighting','Native flowering species with staggered bloom','Paving bare soil','Removing vegetation edges'],a:1,e:'Diverse flowering species help pollinators over time.'},
+    {q:'What is the purpose of installing fauna refuges?',o:['Pure decoration','Provide shelter or nesting opportunities when suitable','Increase light pollution','Replace habitat connectivity'],a:1,e:'Refuges can support local fauna when integrated into broader habitat management.'},
+    {q:'A robust biodiversity action plan should include...',o:['Only slogans','Objectives, actions, indicators and review','Only one annual activity','No follow-up'],a:1,e:'Plans need targets, actions, indicators and learning loops.'}
+  ],
+  indicators:[
+    {q:'Which is a direct biodiversity indicator?',o:['Number of meeting rooms','Species richness','Total office area','Printer usage'],a:1,e:'Species richness is a direct biodiversity-related indicator.'},
+    {q:'Why use bioindicators?',o:['They replace all measurements','They provide information about environmental quality','They are cheaper than thinking','They only work in oceans'],a:1,e:'Bioindicators reveal ecological condition through living communities.'},
+    {q:'What can Shannon or Simpson indices tell us?',o:['Building occupancy','Diversity quality beyond simple species counts','Number of suppliers','Annual revenue'],a:1,e:'These indices consider richness and relative abundance.'},
+    {q:'What may signal ecological imbalance?',o:['Excessive dominance of one species','Several native species present','Stable populations','Seasonal variation'],a:0,e:'Dominance by one species can indicate ecological simplification.'},
+    {q:'Which metric best shows success of a green corridor?',o:['Number of meetings held','Use by fauna and increase in species presence','How many posters were printed','Paint colour nearby'],a:1,e:'Ecological use and species response are the meaningful outcomes.'},
+    {q:'Why monitor over time?',o:['One measurement is always enough','Because biodiversity outcomes change and need trend analysis','Because audits ask for it only','To avoid action'],a:1,e:'Trend monitoring is essential for adaptive management and credibility.'},
+    {q:'Which indicator can warn early before damage is obvious?',o:['Building colour','Changes in bioindicator communities','Number of newsletters','Parking spaces'],a:1,e:'Biological communities often respond before impacts are visually obvious.'},
+    {q:'A measurable biodiversity strategy should report...',o:['Only intentions','Impact, trend and limits of what is being measured','Only photos','Only participation figures'],a:1,e:'Transparent reporting needs impact metrics and honest limitations.'}
+  ],
+  threats:[
+    {q:'What can artificial light at night do?',o:['Improve all wildlife behaviour','Alter activity patterns and orientation','Guarantee more biodiversity','Reduce fragmentation'],a:1,e:'Light pollution affects navigation, feeding and circadian rhythms.'},
+    {q:'Why can intensive pesticide use be harmful?',o:['It never reaches non-target species','It can affect beneficial insects and other non-target organisms','It always improves habitats','It replaces restoration'],a:1,e:'Non-target effects are a major ecological concern.'},
+    {q:'What is greenwashing in biodiversity?',o:['Measured restoration work','Communicating strong claims without real or verified impact','Planting native flowers','Monitoring pollinators'],a:1,e:'Greenwashing means overstating environmental value without evidence.'},
+    {q:'Which pressure often reduces soil biodiversity?',o:['Mulching with native material','Soil compaction','Habitat restoration','Reducing herbicides'],a:1,e:'Compaction reduces porosity, oxygen and biological activity.'},
+    {q:'What threat does habitat loss create?',o:['More connectivity','Reduced space and resources for species','Guaranteed adaptation','No change in ecosystems'],a:1,e:'Habitat loss removes shelter, food and breeding sites.'},
+    {q:'Which industrial-site issue can affect fauna directly?',o:['Adapted infrastructure','Collision and entrapment risks','Native shrubs','Ecological monitoring'],a:1,e:'Poorly designed infrastructure can create direct mortality risks.'},
+    {q:'What usually happens when one ecological pressure is ignored for years?',o:['Systems become automatically stronger','Cumulative impacts can build up','No long-term effect occurs','Monitoring becomes unnecessary'],a:1,e:'Unmanaged pressures often accumulate and reduce resilience.'},
+    {q:'Why is fragmented habitat harder for fauna?',o:['Movement becomes easier','Movement, feeding and gene flow become harder','It removes edge effects completely','It improves adaptation instantly'],a:1,e:'Fragmentation increases isolation and risk.'}
+  ],
+  airbus:[
+    {q:'What is the strongest biodiversity approach for an industrial company?',o:['Isolated symbolic actions','Integrating actions into strategy, operations and metrics','Only external communication','Only annual celebration days'],a:1,e:'Real impact comes from integration, not isolated gestures.'},
+    {q:'What makes an Airbus biodiversity proposal more credible?',o:['A nice slogan','Clear problem definition, evidence and follow-up','Only one photo','A vague promise'],a:1,e:'Credibility requires logic, evidence, scope and monitoring.'},
+    {q:'Which action shows environmental leadership?',o:['Doing the minimum only during audits','Taking proactive evidence-based action','Avoiding measurement','Waiting for others first'],a:1,e:'Leadership means acting early and grounding decisions in evidence.'},
+    {q:'In a plant environment, a biodiversity corridor should be evaluated by...',o:['Internal popularity only','Ecological function and species use','How expensive it looks','Whether it has a slogan'],a:1,e:'Function and ecological uptake matter more than appearance.'},
+    {q:'Which practice best avoids biodiversity greenwashing?',o:['Communicating only positive claims','Defining indicators and reporting actual results','Using many nature photos','Using broad promises'],a:1,e:'Evidence and transparent reporting prevent empty claims.'},
+    {q:'What should happen after a biodiversity action is launched?',o:['Nothing else','Tracking, review and adjustment','Only a celebration post','A second slogan'],a:1,e:'Actions should move into follow-up and continuous improvement.'},
+    {q:'Why can biodiversity matter to Airbus operations?',o:['It is unrelated to industrial sites','It connects with land use, water, lighting, suppliers and credibility','It only matters in rural parks','It replaces compliance'],a:1,e:'Industrial operations interact with multiple biodiversity pressures and dependencies.'},
+    {q:'What is the best internal communication tone for biodiversity?',o:['Childish and vague','Adult, precise and evidence-based','Only emotional','Only legal language'],a:1,e:'Technical but clear communication supports credibility and uptake.'}
+  ]
+};
+
+const appState = {
+  playerCount: 2,
+  players: [],
+  current: 0,
+  started: false,
+  awaitingAnswer: false,
+  positions: [],
+  tokens: [],
+  questionPool: {},
+  lastRoll: null,
+};
+
+const setupCats = document.getElementById('setupCats');
+const playerInputs = document.getElementById('playerInputs');
+const modalRoot = document.getElementById('modalRoot');
+const boardSvg = document.getElementById('boardSvg');
+
+function renderSetupCats(){
+  setupCats.innerHTML = CATEGORIES.map(c => `
+    <div class="cat-dot"><div class="dot" style="background:${c.color}"></div><div>${c.label}</div></div>
+  `).join('');
+}
+
+function renderPlayerInputs(){
+  playerInputs.innerHTML='';
+  const defaultNames = ['Player 1','Player 2','Player 3','Player 4'];
+  for(let i=0;i<appState.playerCount;i++){
+    const row = document.createElement('div');
+    row.className='input-row';
+    row.innerHTML = `<div class="player-color" style="background:${PLAYER_COLORS[i]}"></div><input type="text" value="${defaultNames[i]}" data-index="${i}" />`;
+    playerInputs.appendChild(row);
+  }
+}
+
+function renderLegend(){
+  const legend = document.getElementById('legend');
+  legend.innerHTML = CATEGORIES.map(c => `
+    <div class="legend-item"><div class="dot" style="background:${c.color}"></div><div><h4>${c.label}</h4><p>${c.desc}</p></div></div>
+  `).join('');
+}
+
+function cloneQuestions(){
+  const out = {};
+  for(const [k,v] of Object.entries(QUESTIONS)) out[k] = [...v].sort(()=>Math.random()-.5);
+  return out;
+}
+
+function makePlayers(){
+  const names = [...playerInputs.querySelectorAll('input')].map((el,i)=>el.value.trim() || `Player ${i+1}`);
+  appState.players = names.map((name,idx)=>(
+    { name, color: PLAYER_COLORS[idx], position:-1, wedges:new Set(), score:0 }
+  ));
+  appState.current = 0;
+  appState.started = false;
+  appState.awaitingAnswer = false;
+  appState.lastRoll = null;
+  appState.questionPool = cloneQuestions();
+}
+
+function cellCategory(index){
+  return CATEGORIES[index % CATEGORIES.length];
+}
+
+function buildBoard(){
+  const cx=360, cy=360, r=220;
+  const svg = boardSvg;
+  svg.innerHTML='';
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML = `
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="coreGlow" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#b8f9ff" stop-opacity="1"/>
+      <stop offset="45%" stop-color="#4db8ef" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#09172c" stop-opacity="0.2"/>
+    </radialGradient>
+  `;
+  svg.appendChild(defs);
+
+  const bg = el('rect',{x:50,y:50,width:620,height:620,rx:28,fill:'rgba(5,12,28,.34)'});
+  svg.appendChild(bg);
+  svg.appendChild(el('circle',{cx,cy,r:240,fill:'none',stroke:'rgba(255,255,255,.06)','stroke-width':34}));
+  svg.appendChild(el('circle',{cx,cy,r:200,fill:'none',stroke:'rgba(255,255,255,.05)','stroke-width':2}));
+  svg.appendChild(el('circle',{cx,cy,r:140,fill:'none',stroke:'rgba(255,255,255,.05)','stroke-width':2}));
+
+  // Radial lines
+  for(let i=0;i<6;i++){
+    const ang = (-90 + i*60) * Math.PI/180;
+    const x2 = cx + Math.cos(ang)*220;
+    const y2 = cy + Math.sin(ang)*220;
+    svg.appendChild(el('line',{x1:cx,y1:cy,x2,y2,stroke:'rgba(255,255,255,.08)','stroke-width':3}));
+  }
+
+  // Center wedge wheel
+  const centerGroup = el('g',{});
+  const wedgeRadius = 82;
+  CATEGORIES.forEach((cat,i)=>{
+    const start = -90 + i*60;
+    const path = describeDonutSlice(cx,cy,46,wedgeRadius,start,start+60);
+    centerGroup.appendChild(el('path',{d:path,fill:cat.color,opacity:.95}));
+  });
+  centerGroup.appendChild(el('circle',{cx,cy,r:46,fill:'#17223f'}));
+  centerGroup.appendChild(el('circle',{cx,cy,r:12,fill:'white',filter:'url(#glow)'}));
+  svg.appendChild(centerGroup);
+
+  // Outer cells + coordinates
+  appState.positions = [];
+  for(let i=0;i<24;i++){
+    const angle = (-90 + i*15) * Math.PI/180;
+    const x = cx + Math.cos(angle)*220;
+    const y = cy + Math.sin(angle)*220;
+    appState.positions.push({x,y,angle});
+    const cat = cellCategory(i);
+    const isHq = i % 6 === 0;
+    const radius = isHq ? 27 : 20;
+    svg.appendChild(el('circle',{cx:x,cy:y,r:radius,fill:cat.color,stroke:'rgba(255,255,255,.28)','stroke-width':isHq?3:2,filter:isHq?'url(#glow)':null}));
+    if(isHq){
+      svg.appendChild(el('text',{x,y:y+7,'text-anchor':'middle','font-size':20,'font-weight':900,fill:'#ffffff'}, '★'));
+    } else {
+      svg.appendChild(el('text',{x,y:y+5,'text-anchor':'middle','font-size':12,'font-weight':900,fill:'#ffffff'}, String(i+1)));
+    }
+  }
+
+  // Category endpoints labels tiny not necessary; tokens later
+  appState.tokens = appState.players.map((_, idx) => {
+    const c = el('circle',{cx:cx + idx*12 - ((appState.players.length-1)*6), cy:cy + idx*8 - ((appState.players.length-1)*4), r:9, fill:PLAYER_COLORS[idx], stroke:'#fff','stroke-width':2});
+    svg.appendChild(c);
+    const t = el('text',{x:parseFloat(c.getAttribute('cx')), y:parseFloat(c.getAttribute('cy'))+4,'text-anchor':'middle','font-size':10,'font-weight':900,fill:'#fff'}, String(idx+1));
+    svg.appendChild(t);
+    return {circle:c,label:t};
+  });
+}
+
+function el(tag, attrs={}, text=''){
+  const n = document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>{ if(v!==null && v!==undefined) n.setAttribute(k,v); });
+  if(text) n.textContent = text;
+  return n;
+}
+
+function polar(cx,cy,r,deg){ const a=(deg-90)*Math.PI/180; return {x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)}; }
+function describeDonutSlice(cx,cy,r1,r2,start,end){
+  const p1 = polar(cx,cy,r2,end), p2 = polar(cx,cy,r2,start), p3 = polar(cx,cy,r1,start), p4 = polar(cx,cy,r1,end);
+  const large = end-start <= 180 ? 0 : 1;
+  return `M ${p1.x} ${p1.y} A ${r2} ${r2} 0 ${large} 0 ${p2.x} ${p2.y} L ${p3.x} ${p3.y} A ${r1} ${r1} 0 ${large} 1 ${p4.x} ${p4.y} Z`;
+}
+
+function updateTokens(){
+  const cx=360, cy=360;
+  appState.players.forEach((p,idx)=>{
+    let x,y;
+    if(p.position < 0){
+      x = cx + idx*12 - ((appState.players.length-1)*6);
+      y = cy + idx*10 - ((appState.players.length-1)*5);
+    } else {
+      const pos = appState.positions[p.position];
+      const bump = idx*8 - ((appState.players.length-1)*4);
+      x = pos.x + Math.cos(pos.angle + Math.PI/2)*bump;
+      y = pos.y + Math.sin(pos.angle + Math.PI/2)*bump;
+    }
+    appState.tokens[idx].circle.setAttribute('cx',x);
+    appState.tokens[idx].circle.setAttribute('cy',y);
+    appState.tokens[idx].label.setAttribute('x',x);
+    appState.tokens[idx].label.setAttribute('y',y+4);
+  });
+}
+
+function renderRanking(){
+  const table = document.getElementById('rankingTable');
+  const sorted = [...appState.players].sort((a,b)=> b.wedges.size - a.wedges.size || b.score - a.score);
+  table.innerHTML = sorted.map((p,i)=>`<tr><td class="rank-num">${i+1}</td><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:8px"></span>${escapeHtml(p.name)}</td><td class="score-cell">${p.wedges.size}/6</td></tr>`).join('');
+}
+
+function wedgeWheelStyle(player){
+  const sliceColors = CATEGORIES.map(c => player.wedges.has(c.key) ? c.color : 'rgba(255,255,255,.06)');
+  return `conic-gradient(from -90deg, ${sliceColors[0]} 0 60deg, ${sliceColors[1]} 60deg 120deg, ${sliceColors[2]} 120deg 180deg, ${sliceColors[3]} 180deg 240deg, ${sliceColors[4]} 240deg 300deg, ${sliceColors[5]} 300deg 360deg)`;
+}
+
+function renderPlayerCards(){
+  const wrap = document.getElementById('playerCards');
+  wrap.innerHTML='';
+  appState.players.forEach((p,idx)=>{
+    const card = document.createElement('div');
+    card.className = 'player-card' + (idx===appState.current ? ' active':'');
+    const activeArrow = idx===appState.current ? '<span class="arrow">▶</span>' : '';
+    card.innerHTML = `
+      <div class="p-head">
+        <div class="p-name"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${p.color}"></span>${escapeHtml(p.name)}</div>
+        ${activeArrow}
+      </div>
+      <div class="wedge-row"><div class="wedge-wheel" style="background:${wedgeWheelStyle(p)}"></div><span>${p.wedges.size}/6 wedges</span></div>
+    `;
+    wrap.appendChild(card);
+  });
+}
+
+function updateTurnPanel(msg){
+  const p = appState.players[appState.current];
+  const label = p.position < 0 ? 'Center' : `Cell ${p.position+1}`;
+  const cat = p.position < 0 ? CATEGORIES[0] : cellCategory(p.position);
+  document.getElementById('turnName').textContent = `${p.name} to play`;
+  document.getElementById('turnBadge').textContent = cat.label;
+  document.getElementById('turnMeta').textContent = p.position < 0 ? `${p.name} is in the centre. Start the round and roll.` : `${p.name} is on cell ${p.position+1}. Current category: ${cat.label}.`;
+  document.getElementById('cellValue').textContent = label;
+  document.getElementById('wedgeValue').textContent = `${p.wedges.size}/6`;
+  if(msg) document.getElementById('logBox').textContent = msg;
+  document.getElementById('dieFace').textContent = appState.lastRoll === null ? '—' : String(appState.lastRoll);
+}
+
+function showGame(){
+  document.getElementById('setupScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+  renderLegend();
+  buildBoard();
+  updateTokens();
+  renderRanking();
+  renderPlayerCards();
+  updateTurnPanel(`Game ready. ${appState.players[0].name} starts.`);
+}
+
+function nextPlayer(){
+  appState.current = (appState.current + 1) % appState.players.length;
+  renderRanking();
+  renderPlayerCards();
+  updateTurnPanel();
+}
+
+function rollDie(){
+  if(appState.awaitingAnswer) return;
+  const p = appState.players[appState.current];
+  const roll = Math.floor(Math.random()*6)+1;
+  appState.lastRoll = roll;
+  p.position = p.position < 0 ? (roll-1)%24 : (p.position + roll) % 24;
+  p.score += 1;
+  updateTokens();
+  renderRanking();
+  renderPlayerCards();
+  const cat = cellCategory(p.position);
+  updateTurnPanel(`${p.name} rolled ${roll} and moved to cell ${p.position+1} · ${cat.label}.`);
+  window.setTimeout(()=>askQuestion(p, cat), 350);
+}
+
+function drawQuestion(catKey){
+  const pool = appState.questionPool[catKey];
+  if(!pool.length) appState.questionPool[catKey] = [...QUESTIONS[catKey]].sort(()=>Math.random()-.5);
+  return appState.questionPool[catKey].pop();
+}
+
+function askQuestion(player, cat){
+  appState.awaitingAnswer = true;
+  const q = drawQuestion(cat.key);
+  modalRoot.classList.remove('hidden');
+  modalRoot.innerHTML = `
+    <div class="overlay">
+      <div class="modal">
+        <div class="eyebrow">${cat.label}</div>
+        <h2>${q.q}</h2>
+        <p>Select the most accurate answer.</p>
+        <div class="answer-grid">
+          ${q.o.map((opt,i)=>`<button class="btn-answer" data-i="${i}"><strong>${String.fromCharCode(65+i)}.</strong> ${opt}</button>`).join('')}
+        </div>
+        <div id="feedbackBox"></div>
+        <div class="modal-actions"><button class="btn-small hidden" id="nextTurnBtn">Continue</button></div>
+      </div>
+    </div>`;
+  [...modalRoot.querySelectorAll('.btn-answer')].forEach(btn=>btn.addEventListener('click',()=>{
+    if(modalRoot.dataset.locked==='1') return;
+    modalRoot.dataset.locked='1';
+    const selected = Number(btn.dataset.i);
+    const ok = selected === q.a;
+    const feedback = document.getElementById('feedbackBox');
+    if(ok){
+      player.wedges.add(cat.key);
+      player.score += 10;
+      feedback.className = 'feedback ok';
+      feedback.innerHTML = `<strong>Correct.</strong> ${q.e}<br><br><strong>${cat.label} wedge ${player.wedges.has(cat.key) ? 'secured' : 'updated'}.</strong>`;
+      updateTurnPanel(`${player.name} answered correctly and secured ${cat.label}.`);
+    } else {
+      player.score += 2;
+      feedback.className = 'feedback ko';
+      feedback.innerHTML = `<strong>Not correct.</strong> ${q.e}<br><br><strong>Right answer:</strong> ${String.fromCharCode(65+q.a)}. ${q.o[q.a]}`;
+      updateTurnPanel(`${player.name} missed the ${cat.label} question.`);
+    }
+    renderRanking();
+    renderPlayerCards();
+    const nextBtn = document.getElementById('nextTurnBtn');
+    nextBtn.classList.remove('hidden');
+    nextBtn.addEventListener('click',()=>{
+      modalRoot.classList.add('hidden');
+      modalRoot.innerHTML='';
+      modalRoot.dataset.locked='0';
+      appState.awaitingAnswer = false;
+      if(player.wedges.size === CATEGORIES.length){
+        showWinner(player);
+      } else {
+        nextPlayer();
+      }
+    }, {once:true});
+  }));
+}
+
+function showWinner(player){
+  modalRoot.classList.remove('hidden');
+  modalRoot.innerHTML = `
+    <div class="overlay">
+      <div class="modal">
+        <div class="eyebrow">Mission complete</div>
+        <h2>${escapeHtml(player.name)} wins</h2>
+        <p>${escapeHtml(player.name)} collected the six wedges and completed the Airbus biodiversity challenge.</p>
+        <div class="feedback ok"><strong>Final result:</strong> 6/6 wedges completed.</div>
+        <div class="modal-actions">
+          <button class="btn-small" id="winnerHomeBtn">Back to home</button>
+          <button class="btn-small" id="winnerResetBtn">Play again</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('winnerHomeBtn').addEventListener('click',goHome);
+  document.getElementById('winnerResetBtn').addEventListener('click',()=>{ modalRoot.classList.add('hidden'); modalRoot.innerHTML=''; resetBoard(); });
+}
+
+function showRules(){
+  modalRoot.classList.remove('hidden');
+  modalRoot.innerHTML = `
+    <div class="overlay">
+      <div class="modal">
+        <div class="eyebrow">Rules</div>
+        <h2>How to play</h2>
+        <p>Players move clockwise around the board. Each cell belongs to one category. After rolling the die, answer one question from the landing category. A correct answer secures that category wedge. First player or team to collect the six wedges wins.</p>
+        <div class="modal-actions"><button class="btn-small" id="closeRulesBtn">Close</button></div>
+      </div>
+    </div>`;
+  document.getElementById('closeRulesBtn').addEventListener('click',()=>{ modalRoot.classList.add('hidden'); modalRoot.innerHTML=''; });
+}
+
+function resetBoard(){
+  makePlayers();
+  buildBoard();
+  updateTokens();
+  renderRanking();
+  renderPlayerCards();
+  updateTurnPanel(`Game ready. ${appState.players[0].name} starts.`);
+  modalRoot.classList.add('hidden');
+  modalRoot.innerHTML='';
+}
+
+function goHome(){
+  modalRoot.classList.add('hidden');
+  modalRoot.innerHTML='';
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('setupScreen').classList.remove('hidden');
+}
+
+function escapeHtml(s){return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+renderSetupCats();
+renderPlayerInputs();
+renderLegend();
+
+document.querySelectorAll('.count-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  appState.playerCount = Number(btn.dataset.count);
+  renderPlayerInputs();
+}));
+
+document.getElementById('startGameBtn').addEventListener('click',()=>{ makePlayers(); showGame(); });
+document.getElementById('rollBtn').addEventListener('click',rollDie);
+document.getElementById('startRoundBtn').addEventListener('click',rollDie);
+document.getElementById('resetBtn').addEventListener('click',resetBoard);
+document.getElementById('rulesBtn').addEventListener('click',showRules);
+document.getElementById('homeBtn').addEventListener('click',goHome);
+</script>
+</body>
+</html>
