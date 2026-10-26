@@ -15,21 +15,21 @@ export const CATEGORY_COLORS = [
 ];
 
 export const CATEGORY_NAMES = [
-  'Nature',
-  'Ecosystems',
-  'Footprint & risks',
-  'Mitigation',
-  'Measurement',
-  'Airbus operations',
+  "Eco-Design & Lifecycle",
+  "Operations & Energy",
+  "Circularity & Materials",
+  "Supply Chain & Compliance",
+  "Evidence & Governance",
+  "Risk & Resilience"
 ];
 
 export const CATEGORY_SHORT_NAMES = [
-  'Nature',
-  'Ecosystems',
-  'Risks',
-  'Mitigation',
-  'Measurement',
-  'Airbus',
+  "Eco-Design",
+  "Operations",
+  "Circularity",
+  "Supply Chain",
+  "Evidence",
+  "Resilience"
 ];
 
 export const PLAYER_COLORS = ['#f97316', '#e879f9', '#84cc16', '#facc15'];
