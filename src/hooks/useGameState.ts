@@ -3,7 +3,7 @@ import { CATEGORY_NAMES, NODES, PLAYER_COLORS, findReachableEndpoints } from '..
 import { getRandomQuestion } from '../game/questions';
 import { GameState, Player } from '../game/types';
 
-const STORAGE_KEY = 'tas-sustainability-quest-en-v2';
+const STORAGE_KEY = 'sustainability-quest-en-v3';
 
 export const initialState: GameState = {
   phase: 'setup',
