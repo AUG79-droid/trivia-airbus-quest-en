@@ -134,7 +134,7 @@ export default function GameScreen({
     <main className="game-page">
       <header className="game-header">
         <div>
-          <span className="header-mark" aria-hidden="true">TAS</span>
+          <span className="header-mark" aria-hidden="true">SQ</span>
           <div><strong>Sustainability Quest</strong><small>Airbus learning challenge</small></div>
         </div>
         <nav aria-label="Game controls">
