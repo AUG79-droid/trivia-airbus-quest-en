@@ -23,7 +23,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
           <span /><span /><span /><span /><span /><span />
         </div>
         <p className="eyebrow">LEARN · DECIDE · ADVANCE</p>
-        <h1>Sustainability Quest</h1>
+        <h1><span>Sustainability</span> Quest</h1>
         <p className="setup-lead">
           Explore engineering, operations, materials, supply chain, evidence and risk through a six-category decision board. Earn all six learning badges.
         </p>
