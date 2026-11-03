@@ -25,6 +25,10 @@ describe("Validate cross-functional curriculum", () => {
     }
     expect(distribution).toEqual([12,12,12,12]);
   });
+  it("Category names display Governance and Risk Management.", () => {
+    expect(CATEGORY_NAMES.slice(4)).toEqual(["Governance", "Risk Management"]);
+    expect(CATEGORY_SHORT_NAMES.slice(4)).toEqual(["Governance", "Risk Management"]);
+  });
   it("The 48 question identifiers are unique; obsolete nature categories are not reintroduced.", () => {
     expect(new Set(QUESTIONS.map(q => q.id)).size).toBe(48);
     expect(CATEGORY_NAMES.join(' | ').toLowerCase()).not.toMatch(/naturaleza|ecosistemas|\\bnature\\b|\\becosystems\\b/);
