@@ -25,7 +25,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
         <p className="eyebrow">LEARN · DECIDE · ADVANCE</p>
         <h1><span>Sustainability</span> Quest</h1>
         <p className="setup-lead">
-          Explore engineering, operations, materials, supply chain, evidence and risk through a six-category decision board. Earn all six learning badges.
+          Explore eco-design, operations, circularity, supply chain, governance and risk management through a six-category decision board. Earn all six learning badges.
         </p>
 
         <div className="mission-flow" aria-label="How to play">
