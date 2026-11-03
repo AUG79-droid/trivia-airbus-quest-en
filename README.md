@@ -7,8 +7,8 @@ Collaborative board game for applied sustainability learning: **48 situational q
 2. Operations & Energy.
 3. Circularity & Materials.
 4. Supply Chain & Compliance.
-5. Evidence & Governance.
-6. Risk & Resilience.
+5. Governance.
+6. Risk Management.
 
 ## Gameplay
 One to four players roll a die, choose routes, answer questions with explanations, earn six topic badges and complete a final challenge. The original animated board, scoring and game rules are preserved while the curriculum has been replaced to broaden its application.
