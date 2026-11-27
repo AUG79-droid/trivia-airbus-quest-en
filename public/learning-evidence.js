@@ -97,7 +97,7 @@ function mountNative(config,m){
 const id=config.id,params=new URLSearchParams(location.search),t=(a,b)=>language==="es"?a:b;
 let language=config.fixedLanguage||((params.get("hubLang")||params.get("lang")||document.documentElement.lang||"en").toLowerCase().startsWith("es")?"es":"en");
 const measured=m.measured(id),key=m.KEY+".native."+id;
-let records=[],session,storageOK=true,eligible=false,seenNonFinal=false,dialogMode="",finalSignal=false,prompted=false;
+let pendingQuestStart=null;let records=[],session,storageOK=true,eligible=false,seenNonFinal=false,dialogMode="",finalSignal=false,prompted=false;
 const read=()=>{try{const raw=localStorage.getItem(key);return raw?m.parse(JSON.parse(raw)):[];}catch{storageOK=false;return [];}};
 records=read();const compatible=records.filter(s=>!config.fixedLanguage||s.language===config.fixedLanguage);session=[...compatible].reverse().find(s=>s.outcome===null)||[...compatible].reverse()[0]||null;
 if(session)language=session.language;
@@ -174,7 +174,7 @@ function reviewAnswers(phase,parent){
 }
 function show(mode,outcome){
  dialogMode=mode;dialog.lang=language;dialog.replaceChildren(el("p",t("LEARNING EVIDENCE · EVALUACIÓN","LEARNING EVIDENCE · ASSESSMENT"),"kicker"));
- const title=el("h2",mode==="pre"?t("Antes de comenzar","Before you start"):mode==="pre-review"?t("Corrección de la evaluación inicial","Initial assessment review"):mode==="result"?t("Tu resultado de aprendizaje","Your learning result"):t("Después de la experiencia","After the experience"));title.id="sn-evidence-title";dialog.append(title);
+ const title=el("h2",mode==="pre"?t("Evaluación inicial · 4 preguntas","Initial assessment · 4 questions"):mode==="pre-review"?t("Corrección de la evaluación inicial","Initial assessment review"):mode==="result"?t("Tu resultado de aprendizaje","Your learning result"):t("Después de la experiencia","After the experience"));title.id="sn-evidence-title";dialog.append(title);
  note(t("Respuestas locales, sin nombres ni envío automático. Comparte el resultado solo por el canal autorizado. No introduzcas información de trabajo.","Local responses, no names or automatic transmission. Share results only through an authorised channel. Do not enter work information."));
  if(!storageOK)note(t("El almacenamiento no está disponible. Mantén la página abierta y descarga el resultado antes de salir.","Storage is unavailable. Keep this page open and download the result before leaving."),"notice");
  if(mode==="pre"){
@@ -188,7 +188,7 @@ function show(mode,outcome){
    const result=el("p",t("Resultado inicial: ","Initial result: ")+score+"/4 ("+score*25+"%)","metric");result.dataset.initialScore=String(score);dialog.append(result);
    note(t("Tu puntuación inicial ya está registrada. Revisa las cuatro respuestas y sus explicaciones antes de empezar. No hay nota mínima.","Your initial score is recorded. Review all four answers and explanations before starting. There is no pass score."));
    reviewAnswers("pre",dialog);
-   dialog.append(button(t("Comenzar actividad","Start activity"),()=>{transition({type:"launch"});seenNonFinal=!terminal();close();check();}));
+   dialog.append(button(t("Comenzar actividad","Start activity"),()=>{transition({type:"launch"});seenNonFinal=!terminal();close();const start=pendingQuestStart;pendingQuestStart=null;if(start)start();check();}));
  }else if(mode==="finish"){
    note(config.manual?t("Indica si has terminado el recorrido de aprendizaje DESPUÉS de la evaluación inicial. La finalización es autodeclarada.","Indicate whether you completed the learning journey AFTER the initial assessment. Completion is self-reported."):eligible?t("Has llegado a la pantalla de resultados. Si has completado el recorrido después de la evaluación inicial, revisa tu resultado y realiza la evaluación final.","You reached the results screen. If you completed the journey after the initial assessment, review your result and take the final assessment."):t("La evaluación final de conocimientos se habilita cuando llegues a los resultados de la actividad. Puedes continuar o registrar una sesión parcial.","The final knowledge assessment becomes available when you reach the activity results. You can continue or record a partial session."));
    const row=el("div",undefined,"actions");
@@ -203,13 +203,18 @@ function show(mode,outcome){
    if(session.post){const a=m.score(session.pre),b=m.score(session.post);metric(t("Antes","Before"),a+"/4");metric(t("Después","After"),b+"/4");metric(t("Cambio descriptivo","Descriptive change"),(b-a)*25+" pp");dialog.append(pct);note(t("Pruebas breves no calibradas. La corrección inicial forma parte del aprendizaje. No certifican competencia ni demuestran causalidad, productividad o resiliencia operativa.","Short uncalibrated probes. Initial feedback is part of learning. They do not certify competence or prove causality, productivity or operational resilience."));dialog.append(el("h3",t("Corrección de la evaluación final","Final assessment review")));reviewAnswers("post",dialog);const detail=el("details");detail.append(el("summary",t("Revisar evaluación inicial","Review initial assessment")));reviewAnswers("pre",detail);dialog.append(detail);
    }else note(t("No se calcula mejora de conocimientos para sesiones parciales o de consulta.","Knowledge gain is not calculated for partial or exploration sessions."));
    const grid=el("div",undefined,"metrics");fields().forEach(([k,label])=>{const d=el("div",undefined,"metric");d.append(el("small",label),el("strong",session.feedback[k]===0?"N/A":session.feedback[k]+"/5"));grid.append(d);});dialog.append(grid);
-   const a=el("div",undefined,"actions");a.append(button(t("Descargar resultado JSON","Download JSON result"),download),button(t("Volver a la actividad","Return to activity"),close,"secondary"),button(t("Nueva evaluación","New assessment"),()=>{if(confirm(t("¿Empezar otra evaluación? Reinicia el ejercicio para un nuevo recorrido; la sesión anterior se conserva.","Start another assessment? Restart the exercise for a new journey; the previous session is retained.")))startFresh();},"secondary"));dialog.append(a);
+   const a=el("div",undefined,"actions");a.append(button(t("Descargar resultado JSON","Download JSON result"),download),button(t("Volver a la actividad","Return to activity"),close,"secondary"));dialog.append(a);
  }
  if(!dialog.open)dialog.showModal();dialog.scrollTop=0;
 }
-if(!session||session.pre===null&&measured&&!session.opened){startFresh();}
-else if(session.opened){seenNonFinal=!terminal();eligible=terminal();updateDock();}
-else show(measured&&session.pre?"pre-review":"pre");
+// Quest setup owns the initial gate: choose mode and participants before answering.
+document.addEventListener("sn-pilot:quest-start",event=>{
+ if(typeof event.detail?.start!=="function")return;
+ event.preventDefault();pendingQuestStart=event.detail.start;
+ if(session&&!session.opened&&session.pre)show("pre-review");
+ else startFresh();
+});
+if(session?.opened){seenNonFinal=!terminal();eligible=terminal();updateDock();}
 new MutationObserver(check).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class","hidden","aria-hidden","data-sn-pilot-complete"]});
 document.addEventListener("sn-pilot:completed",()=>{finalSignal=true;eligible=true;check();});
 document.addEventListener("sn-pilot:open",()=>{if(session?.opened)show(session.outcome!==null?"result":"finish");});
