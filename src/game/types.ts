@@ -19,7 +19,10 @@ export interface Player {
   totalAnswers: number;
 }
 
+export type Difficulty = 'foundation' | 'applied' | 'advanced';
+
 export interface Question {
+  difficulty?: Difficulty;
   id: number;
   category: number;
   text: string;
@@ -48,6 +51,7 @@ export interface GameState {
   lastAnswerCorrect: boolean | null;
   isFinalQuestion: boolean;
   usedQuestionIds: number[];
+  questionHistory?: number[];
   statusMessage: string;
   turnNumber: number;
   newlyEarnedWedge: number | null;

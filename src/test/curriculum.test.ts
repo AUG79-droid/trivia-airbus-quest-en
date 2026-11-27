@@ -3,12 +3,12 @@ import { CATEGORY_NAMES, CATEGORY_SHORT_NAMES } from '../game/board';
 import { QUESTIONS, getRandomQuestion } from '../game/questions';
 
 describe("Validate cross-functional curriculum", () => {
-  it("Board keeps six categories and eight cases per category.", () => {
+  it("Board keeps six categories and thirty cases per category.", () => {
     expect(CATEGORY_NAMES).toHaveLength(6);
     expect(CATEGORY_SHORT_NAMES).toHaveLength(6);
-    expect(QUESTIONS).toHaveLength(48);
+    expect(QUESTIONS).toHaveLength(180);
     for (let category = 0; category < 6; category++) {
-      expect(QUESTIONS.filter(item => item.category === category)).toHaveLength(8);
+      expect(QUESTIONS.filter(item => item.category === category)).toHaveLength(30);
       expect(getRandomQuestion(category, [])).not.toBeNull();
     }
   });
@@ -23,14 +23,14 @@ describe("Validate cross-functional curriculum", () => {
       distribution[q.correctIndex]++;
       expect(q.explanation.trim().length).toBeGreaterThan(90);
     }
-    expect(distribution).toEqual([12,12,12,12]);
+    expect(distribution).toEqual([45,45,45,45]);
   });
   it("Category names display Governance and Risk Management.", () => {
     expect(CATEGORY_NAMES.slice(4)).toEqual(["Governance", "Risk Management"]);
     expect(CATEGORY_SHORT_NAMES.slice(4)).toEqual(["Governance", "Risk Management"]);
   });
-  it("The 48 question identifiers are unique; obsolete nature categories are not reintroduced.", () => {
-    expect(new Set(QUESTIONS.map(q => q.id)).size).toBe(48);
+  it("The 180 question identifiers are unique; obsolete nature categories are not reintroduced.", () => {
+    expect(new Set(QUESTIONS.map(q => q.id)).size).toBe(180);
     expect(CATEGORY_NAMES.join(' | ').toLowerCase()).not.toMatch(/naturaleza|ecosistemas|\\bnature\\b|\\becosystems\\b/);
     for (let category=0; category<6; category++) {
       const used = QUESTIONS.filter(q => q.category === category).map(q => q.id);

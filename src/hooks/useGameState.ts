@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useReducer } from 'react';
 import { CATEGORY_NAMES, NODES, PLAYER_COLORS, findReachableEndpoints } from '../game/board';
-import { getRandomQuestion } from '../game/questions';
+import { getRandomQuestion, rememberQuestion } from '../game/questions';
 import { GameState, Player } from '../game/types';
 
 import { CLIMATE_MODE } from '../game/climate';
 
 const STORAGE_KEY = (CLIMATE_MODE ? 'climate-' : '') + 'sustainability-quest-en-v3';
 
+const HISTORY_KEY = STORAGE_KEY + '-question-history-v1';
+function loadHistory(): number[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const value: unknown = JSON.parse(window.localStorage.getItem(HISTORY_KEY) || '[]');
+    return Array.isArray(value) ? value.filter((id): id is number => Number.isInteger(id)) : [];
+  } catch { return []; }
+}
 export const initialState: GameState = {
   phase: 'setup',
   players: [],
@@ -18,13 +26,14 @@ export const initialState: GameState = {
   lastAnswerCorrect: null,
   isFinalQuestion: false,
   usedQuestionIds: [],
+  questionHistory: [],
   statusMessage: '',
   turnNumber: 1,
   newlyEarnedWedge: null,
 };
 
 export type GameAction =
-  | { type: 'START_GAME'; names: string[] }
+  | { type: 'START_GAME'; names: string[]; history?: number[] }
   | { type: 'ROLL_DIE'; forcedValue?: number }
   | { type: 'SELECT_DESTINATION'; nodeId: number }
   | { type: 'SELECT_CATEGORY'; category: number }
@@ -35,7 +44,7 @@ export type GameAction =
 
 function finalQuestionState(state: GameState, players = state.players): GameState {
   const category = Math.floor(Math.random() * 6);
-  const question = getRandomQuestion(category, state.usedQuestionIds);
+  const question = getRandomQuestion(category, state.usedQuestionIds, state.questionHistory ?? [], 'advanced');
   if (!question) return state;
 
   return {
@@ -67,6 +76,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       return {
         ...initialState,
+        questionHistory: action.history ?? state.questionHistory ?? [],
         phase: 'rolling',
         players,
         statusMessage: `${players[0].name}'s turn. Roll the die and choose a route.`,
@@ -122,7 +132,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         };
       }
 
-      const question = getRandomQuestion(node.category!, state.usedQuestionIds);
+      const question = getRandomQuestion(node.category!, state.usedQuestionIds, state.questionHistory ?? []);
       if (!question) return state;
 
       return {
@@ -139,7 +149,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'SELECT_CATEGORY': {
       if (state.phase !== 'selectingCategory') return state;
-      const question = getRandomQuestion(action.category, state.usedQuestionIds);
+      const question = getRandomQuestion(action.category, state.usedQuestionIds, state.questionHistory ?? []);
       if (!question) return state;
 
       return {
@@ -181,6 +191,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       });
 
       const usedQuestionIds = [...state.usedQuestionIds, state.currentQuestion.id];
+      const questionHistory = rememberQuestion(state.questionHistory ?? [], state.currentQuestion.id);
 
       if (correct && state.isFinalQuestion) {
         return {
@@ -189,6 +200,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           phase: 'victory',
           lastAnswerCorrect: true,
           usedQuestionIds,
+          questionHistory,
           statusMessage: `${players[state.currentPlayerIndex].name} has completed all six areas and the final challenge.`,
         };
       }
@@ -213,6 +225,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: 'feedback',
         lastAnswerCorrect: correct,
         usedQuestionIds,
+        questionHistory,
         statusMessage,
         newlyEarnedWedge: earnsNewWedge ? currentNode.category : null,
       };
@@ -248,7 +261,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'RESET':
-      return initialState;
+      return {...initialState, questionHistory: state.questionHistory ?? []};
 
     default:
       return state;
@@ -262,7 +275,7 @@ function loadState(): GameState {
     if (!saved) return initialState;
     const parsed = JSON.parse(saved) as GameState;
     if (!Array.isArray(parsed.players) || parsed.players.length === 0) return initialState;
-    return parsed;
+    return {...parsed, questionHistory: parsed.questionHistory ?? (parsed.usedQuestionIds ?? []).reduce(rememberQuestion, loadHistory())};
   } catch {
     return initialState;
   }
@@ -272,6 +285,7 @@ export function useGameState() {
   const [state, dispatch] = useReducer(gameReducer, initialState, loadState);
 
   useEffect(() => {
+    if (state.questionHistory?.length) window.localStorage.setItem(HISTORY_KEY, JSON.stringify(state.questionHistory));
     if (state.phase === 'setup') {
       window.localStorage.removeItem(STORAGE_KEY);
     } else {
@@ -281,7 +295,7 @@ export function useGameState() {
 
   return {
     state,
-    startGame: useCallback((names: string[]) => dispatch({ type: 'START_GAME', names }), []),
+    startGame: useCallback((names: string[]) => dispatch({ type: 'START_GAME', names, history: loadHistory() }), []),
     rollDie: useCallback(() => dispatch({ type: 'ROLL_DIE' }), []),
     selectDestination: useCallback((nodeId: number) => dispatch({ type: 'SELECT_DESTINATION', nodeId }), []),
     selectCategory: useCallback((category: number) => dispatch({ type: 'SELECT_CATEGORY', category }), []),
