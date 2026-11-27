@@ -682,18 +682,26 @@ export const GENERAL_QUESTIONS: Question[] = [
 export const QUESTIONS = CLIMATE_MODE ? CLIMATE_QUESTIONS : GENERAL_QUESTIONS;
 
 export function getRandomQuestion(category: number, usedIds: number[], history: number[] = [], preferred?: Difficulty): Question | null {
-  const categoryQuestions = QUESTIONS.filter(q => q.category === category);
+  return selectQuestion(QUESTIONS, category, usedIds, history, preferred);
+}
+export function selectQuestion(bank: Question[], category: number, usedIds: number[], history: number[] = [], preferred?: Difficulty): Question | null {
+  const categoryQuestions = bank.filter(q => q.category === category);
   if (!categoryQuestions.length) return null;
   const available = categoryQuestions.filter(q => !usedIds.includes(q.id));
   const unused = available.length ? available : categoryQuestions;
   const unseen = unused.filter(q => !history.includes(q.id));
   let pool = unseen.length ? unseen : unused;
+  // Questions sharing an authored scenario have the same feedback. Prefer other scenarios
+  // before returning to that scenario, so feedback cannot immediately reveal the next answer.
+  const usedScenarios = new Set(bank.filter(q => usedIds.includes(q.id)).map(q => q.explanation));
+  const otherScenarios = pool.filter(q => !usedScenarios.has(q.explanation));
+  if (otherScenarios.length) pool = otherScenarios;
   if (!unseen.length) {
     const oldest = Math.min(...pool.map(q => history.indexOf(q.id)));
     pool = pool.filter(q => history.indexOf(q.id) === oldest);
   } else {
     const levels: Difficulty[] = ['foundation','applied','advanced'];
-    const counts = Object.fromEntries(levels.map(level => [level, usedIds.filter(id => QUESTIONS.find(q => q.id === id)?.difficulty === level).length]));
+    const counts = Object.fromEntries(levels.map(level => [level, usedIds.filter(id => bank.find(q => q.id === id)?.difficulty === level).length]));
     const requested = preferred ? pool.filter(q => q.difficulty === preferred) : [];
     if (requested.length) pool = requested;
     else {

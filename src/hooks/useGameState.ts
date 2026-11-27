@@ -275,7 +275,7 @@ function loadState(): GameState {
     if (!saved) return initialState;
     const parsed = JSON.parse(saved) as GameState;
     if (!Array.isArray(parsed.players) || parsed.players.length === 0) return initialState;
-    return {...parsed, questionHistory: parsed.questionHistory ?? loadHistory()};
+    return {...parsed, questionHistory: parsed.questionHistory ?? (parsed.usedQuestionIds ?? []).reduce(rememberQuestion, loadHistory())};
   } catch {
     return initialState;
   }

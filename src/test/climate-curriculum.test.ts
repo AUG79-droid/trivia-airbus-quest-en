@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CLIMATE_QUESTIONS, CLIMATE_NAMES, CLIMATE_SHORT_NAMES } from '../game/climate';
-import { GENERAL_QUESTIONS, getRandomQuestion, shuffleAnswers, rememberQuestion } from '../game/questions';
+import { GENERAL_QUESTIONS, getRandomQuestion, selectQuestion, shuffleAnswers, rememberQuestion } from '../game/questions';
 import { gameReducer, initialState } from '../hooks/useGameState';
 describe('Expanded curriculum',()=>{
   it('keeps 180 questions in each edition, with 30 per category and unique IDs and prompts',()=>{
@@ -15,11 +15,18 @@ describe('Expanded curriculum',()=>{
     }
   });
   it('avoids repeats within a category until all 30 are answered',()=>{
-    for(let c=0;c<6;c++){const used:number[]=[];for(let i=0;i<30;i++){const q=getRandomQuestion(c,used)!;expect(used).not.toContain(q.id);used.push(q.id);}expect(getRandomQuestion(c,used)).not.toBeNull();}
+    for(const bank of [GENERAL_QUESTIONS,CLIMATE_QUESTIONS])for(let c=0;c<6;c++){const used:number[]=[];for(let i=0;i<30;i++){const q=selectQuestion(bank,c,used)!;expect(used).not.toContain(q.id);used.push(q.id);}expect(selectQuestion(bank,c,used)).not.toBeNull();}
   });
   it('prioritises unseen questions across games and uses oldest when exhausted',()=>{
     const ids=GENERAL_QUESTIONS.filter(q=>q.category===0).map(q=>q.id);
     const seen=ids.slice(0,-1);expect(getRandomQuestion(0,[],seen)?.id).toBe(ids[29]);expect(getRandomQuestion(0,[],ids)?.id).toBe(ids[0]);expect(getRandomQuestion(0,[ids[0]],ids)?.id).toBe(ids[1]);expect(rememberQuestion([1,2,3],1)).toEqual([2,3,1]);
+  });
+  it('spreads related scenario questions before repeating a scenario',()=>{
+    for(const bank of [GENERAL_QUESTIONS,CLIMATE_QUESTIONS])for(let c=0;c<6;c++){
+      const used:number[]=[],scenarios=new Set<string>();
+      const total=new Set(bank.filter(q=>q.category===c).map(q=>q.explanation)).size;
+      for(let i=0;i<total;i++){const q=selectQuestion(bank,c,used)!;expect(scenarios.has(q.explanation)).toBe(false);scenarios.add(q.explanation);used.push(q.id);}
+    }
   });
   it('shuffles options without changing the correct answer or original question',()=>{
     const q=GENERAL_QUESTIONS[0],before=[...q.options];
