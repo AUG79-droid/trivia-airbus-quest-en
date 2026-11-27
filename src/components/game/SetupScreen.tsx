@@ -37,6 +37,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
           <div><strong>5</strong><span>Complete the final</span></div>
         </div>
 
+        <p className="setup-lead">180 questions · 30 per category · three levels. The game prioritises questions not yet answered in this browser and shuffles answer positions. Repetition occurs only when a category is exhausted in a game.</p>
         <div className="category-strip">
           {CATEGORY_SHORT_NAMES.map((name, index) => (
             <span key={name}><i style={{ backgroundColor: CATEGORY_COLORS[index] }} />{name}</span>

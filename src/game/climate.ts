@@ -1,4 +1,5 @@
 import type { Question } from './types';
+import { EXTRA_CLIMATE_QUESTIONS } from './expanded-climate';
 export const CLIMATE_MODE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('track') === 'climate';
 export const CLIMATE_NAMES = ["Climate fundamentals","Product climate resilience","Design & validation","Operations & supply","Extreme events","Evidence & decisions"];
 export const CLIMATE_SHORT_NAMES = ["Climate","Product","Design","Operations","Extreme events","Evidence"];
@@ -14,7 +15,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Measure carbon footprint"
     ],
     "correctIndex": 0,
-    "explanation": "Adaptation reduces present or future physical risks; mitigation limits the causes of climate change. They can complement each other but are not equivalent."
+    "explanation": "Adaptation reduces present or future physical risks; mitigation limits the causes of climate change. They can complement each other but are not equivalent.",
+    "difficulty": "foundation"
   },
   {
     "id": 1002,
@@ -27,7 +29,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Emissions inventory"
     ],
     "correctIndex": 1,
-    "explanation": "Heat is the hazard, exposure identifies what is affected, and vulnerability depends on the sensitivity and coping capacity of exposed systems."
+    "explanation": "Heat is the hazard, exposure identifies what is affected, and vulnerability depends on the sensitivity and coping capacity of exposed systems.",
+    "difficulty": "foundation"
   },
   {
     "id": 1003,
@@ -40,7 +43,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Manufacturing emissions"
     ],
     "correctIndex": 2,
-    "explanation": "Historical averages alone are insufficient for a long service life. Relevant scenarios, exposure and technical limits are needed, with explicit uncertainty."
+    "explanation": "Historical averages alone are insufficient for a long service life. Relevant scenarios, exposure and technical limits are needed, with explicit uncertainty.",
+    "difficulty": "applied"
   },
   {
     "id": 1004,
@@ -53,7 +57,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Resilience of that function under the assessed conditions"
     ],
     "correctIndex": 3,
-    "explanation": "Resilience concerns preserving or restoring functions during disruption. The conclusion is limited to the conditions, function and evidence examined."
+    "explanation": "Resilience concerns preserving or restoring functions during disruption. The conclusion is limited to the conditions, function and evidence examined.",
+    "difficulty": "advanced"
   },
   {
     "id": 1005,
@@ -66,7 +71,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Assume qualification covers any temperature"
     ],
     "correctIndex": 0,
-    "explanation": "Heat can reduce thermal margins. Engineering must compare exposure and requirements with relevant data and tests before proposing changes."
+    "explanation": "Heat can reduce thermal margins. Engineering must compare exposure and requirements with relevant data and tests before proposing changes.",
+    "difficulty": "foundation"
   },
   {
     "id": 1006,
@@ -79,7 +85,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Change limits without validation"
     ],
     "correctIndex": 1,
-    "explanation": "Air density can affect lift and propulsion performance. The effect depends on configuration and conditions; authorised analysis is required."
+    "explanation": "Air density can affect lift and propulsion performance. The effect depends on configuration and conditions; authorised analysis is required.",
+    "difficulty": "foundation"
   },
   {
     "id": 1007,
@@ -92,7 +99,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Filter mass alone"
     ],
     "correctIndex": 2,
-    "explanation": "Accumulation and erosion are distinct mechanisms. Tests should represent relevant particles and conditions, with specific acceptance criteria."
+    "explanation": "Accumulation and erosion are distinct mechanisms. Tests should represent relevant particles and conditions, with specific acceptance criteria.",
+    "difficulty": "applied"
   },
   {
     "id": 1008,
@@ -105,7 +113,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Analyse specific hazards, requirements and evidence gaps"
     ],
     "correctIndex": 3,
-    "explanation": "Hazard evolution depends on region and phenomenon. Exposure, requirements and data must be assessed before concluding that a gap exists."
+    "explanation": "Hazard evolution depends on region and phenomenon. Exposure, requirements and data must be assessed before concluding that a gap exists.",
+    "difficulty": "advanced"
   },
   {
     "id": 1009,
@@ -118,7 +127,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Remove existing margins"
     ],
     "correctIndex": 0,
-    "explanation": "Gap analysis identifies which requirements and evidence cover exposure and which need review. It does not replace technical approval processes."
+    "explanation": "Gap analysis identifies which requirements and evidence cover exposure and which need review. It does not replace technical approval processes.",
+    "difficulty": "foundation"
   },
   {
     "id": 1010,
@@ -131,7 +141,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "A marketing statement"
     ],
     "correctIndex": 1,
-    "explanation": "Lower deposition does not imply lower erosion or durability. Properties, adverse effects and technical criteria must be checked before extrapolating results."
+    "explanation": "Lower deposition does not imply lower erosion or durability. Properties, adverse effects and technical criteria must be checked before extrapolating results.",
+    "difficulty": "foundation"
   },
   {
     "id": 1011,
@@ -144,7 +155,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Only prototype cost"
     ],
     "correctIndex": 2,
-    "explanation": "A measure may shift impacts or introduce constraints. An equivalent comparison considers requirements, performance, adverse effects and service life."
+    "explanation": "A measure may shift impacts or introduce constraints. An equivalent comparison considers requirements, performance, adverse effects and service life.",
+    "difficulty": "applied"
   },
   {
     "id": 1012,
@@ -157,7 +169,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Durability tests, criteria and specialist review"
     ],
     "correctIndex": 3,
-    "explanation": "Initial response does not establish durability. Representative cycles and degradation assessment help verify the hypothesis against defined requirements."
+    "explanation": "Initial response does not establish durability. Representative cycles and degradation assessment help verify the hypothesis against defined requirements.",
+    "difficulty": "advanced"
   },
   {
     "id": 1013,
@@ -170,7 +183,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Replace everything without diagnosis"
     ],
     "correctIndex": 0,
-    "explanation": "Operational adaptation protects functions within approved limits. Identifying criticality and exposure allows measures to be compared without compromising safety."
+    "explanation": "Operational adaptation protects functions within approved limits. Identifying criticality and exposure allows measures to be compared without compromising safety.",
+    "difficulty": "foundation"
   },
   {
     "id": 1014,
@@ -183,7 +197,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Buy equipment without reviewing location"
     ],
     "correctIndex": 1,
-    "explanation": "Continuity requires knowing which functions depend on energy and whether alternatives share exposure. Measures must be verified under relevant scenarios."
+    "explanation": "Continuity requires knowing which functions depend on energy and whether alternatives share exposure. Measures must be verified under relevant scenarios.",
+    "difficulty": "foundation"
   },
   {
     "id": 1015,
@@ -196,7 +211,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Ignore qualification"
     ],
     "correctIndex": 2,
-    "explanation": "Nominal diversification does not remove common dependencies. Supply adaptation requires assessing exposure, independence, feasibility and qualification."
+    "explanation": "Nominal diversification does not remove common dependencies. Supply adaptation requires assessing exposure, independence, feasibility and qualification.",
+    "difficulty": "applied"
   },
   {
     "id": 1016,
@@ -209,7 +225,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Availability, logistics, storage, compatibility and authorisations"
     ],
     "correctIndex": 3,
-    "explanation": "Lower emissions do not guarantee supply security. An alternative must be feasible in local conditions and meet technical and authorisation requirements."
+    "explanation": "Lower emissions do not guarantee supply security. An alternative must be feasible in local conditions and meet technical and authorisation requirements.",
+    "difficulty": "advanced"
   },
   {
     "id": 1017,
@@ -222,7 +239,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Assume every operation can continue"
     ],
     "correctIndex": 0,
-    "explanation": "Wildfires can affect people, infrastructure and operations. Response depends on reliable information, applicable limits and authorised coordination."
+    "explanation": "Wildfires can affect people, infrastructure and operations. Response depends on reliable information, applicable limits and authorised coordination.",
+    "difficulty": "foundation"
   },
   {
     "id": 1018,
@@ -235,7 +253,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Assume damage reduction is proven"
     ],
     "correctIndex": 1,
-    "explanation": "Latency is a partial indicator. Detection quality and integration with response authorities must be assessed before claiming a benefit."
+    "explanation": "Latency is a partial indicator. Detection quality and integration with response authorities must be assessed before claiming a benefit.",
+    "difficulty": "foundation"
   },
   {
     "id": 1019,
@@ -248,7 +267,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Ignore external dependencies"
     ],
     "correctIndex": 2,
-    "explanation": "Recovery protects people and restores critical functions according to procedures, resources and dependencies; objectives require monitoring."
+    "explanation": "Recovery protects people and restores critical functions according to procedures, resources and dependencies; objectives require monitoring.",
+    "difficulty": "applied"
   },
   {
     "id": 1020,
@@ -261,7 +281,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Result limited to coupon and conditions; assess scaling and requirements"
     ],
     "correctIndex": 3,
-    "explanation": "A material test does not establish whole-platform behaviour. Representativeness, failure modes and requirements must be assessed with specialists."
+    "explanation": "A material test does not establish whole-platform behaviour. Representativeness, failure modes and requirements must be assessed with specialists.",
+    "difficulty": "advanced"
   },
   {
     "id": 1021,
@@ -274,7 +295,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Certified fleet availability"
     ],
     "correctIndex": 0,
-    "explanation": "A simulation explores hypotheses, not proves operational outcomes. Scope, uncertainty and pending validation must be communicated."
+    "explanation": "A simulation explores hypotheses, not proves operational outcomes. Scope, uncertainty and pending validation must be communicated.",
+    "difficulty": "foundation"
   },
   {
     "id": 1022,
@@ -287,7 +309,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Number of untested ideas"
     ],
     "correctIndex": 1,
-    "explanation": "An indicator must link the hazard to the function and a verifiable technical criterion. Comparison requires equivalent exposure and conditions."
+    "explanation": "An indicator must link the hazard to the function and a verifiable technical criterion. Comparison requires equivalent exposure and conditions.",
+    "difficulty": "foundation"
   },
   {
     "id": 1023,
@@ -300,7 +323,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Average without checking consequences"
     ],
     "correctIndex": 2,
-    "explanation": "Sensitivity identifies conditions that change the decision. A defensible recommendation specifies scenarios, limits, owners and review criteria."
+    "explanation": "Sensitivity identifies conditions that change the decision. A defensible recommendation specifies scenarios, limits, owners and review criteria.",
+    "difficulty": "applied"
   },
   {
     "id": 1024,
@@ -313,6 +337,8 @@ export const CLIMATE_QUESTIONS: Question[] = [
       "Identify function, hazard, vulnerability, measure, indicator and owner"
     ],
     "correctIndex": 3,
-    "explanation": "Professional transfer turns an idea into a verifiable hypothesis and routes it to appropriate owners. The game does not authorise real changes."
-  }
+    "explanation": "Professional transfer turns an idea into a verifiable hypothesis and routes it to appropriate owners. The game does not authorise real changes.",
+    "difficulty": "advanced"
+  },
+  ...EXTRA_CLIMATE_QUESTIONS
 ];

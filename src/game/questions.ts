@@ -1,7 +1,8 @@
-import { Question } from './types';
+import { Question, Difficulty } from './types';
+import { EXTRA_GENERAL_QUESTIONS } from './expanded-general';
 import { CLIMATE_MODE, CLIMATE_QUESTIONS } from './climate';
 
-/** 48 applied questions across six cross-functional categories. Educational examples, not operational or regulatory approvals. */
+/** 180 applied questions across six cross-functional categories. Educational examples, not operational or regulatory approvals. */
 export const GENERAL_QUESTIONS: Question[] = [
   {
     "id": 1,
@@ -14,7 +15,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "The weight of the packaging"
     ],
     "correctIndex": 1,
-    "explanation": "Start with an equivalent function, technical acceptance criteria and service horizon. Then compare materials, maintenance, energy, spares and end of life; a single number cannot describe the entire lifecycle."
+    "explanation": "Start with an equivalent function, technical acceptance criteria and service horizon. Then compare materials, maintenance, energy, spares and end of life; a single number cannot describe the entire lifecycle.",
+    "difficulty": "foundation"
   },
   {
     "id": 2,
@@ -27,7 +29,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "A supplier photograph"
     ],
     "correctIndex": 2,
-    "explanation": "The boundary should cover the significant stages for the decision: raw materials, manufacturing, transport, operation, maintenance and end of life, without omitting material impacts."
+    "explanation": "The boundary should cover the significant stages for the decision: raw materials, manufacturing, transport, operation, maintenance and end of life, without omitting material impacts.",
+    "difficulty": "foundation"
   },
   {
     "id": 3,
@@ -40,7 +43,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Complete technical verification before comparing acceptable options"
     ],
     "correctIndex": 3,
-    "explanation": "Repairability adds value only when structural integrity, safety and the approved configuration are maintained. First validate the repair; then compare technically acceptable solutions."
+    "explanation": "Repairability adds value only when structural integrity, safety and the approved configuration are maintained. First validate the repair; then compare technically acceptable solutions.",
+    "difficulty": "foundation"
   },
   {
     "id": 4,
@@ -53,7 +57,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Choose by material colour"
     ],
     "correctIndex": 0,
-    "explanation": "Longer service life may prevent replacements despite a higher initial footprint. Check actual durability, maintenance and use conditions within a common functional unit."
+    "explanation": "Longer service life may prevent replacements despite a higher initial footprint. Check actual durability, maintenance and use conditions within a common functional unit.",
+    "difficulty": "applied"
   },
   {
     "id": 5,
@@ -66,7 +71,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Optimise only for initial cost"
     ],
     "correctIndex": 1,
-    "explanation": "Modularity, accessibility and documented interfaces can support repair and upgrades. Their benefit depends on technical verification and avoiding disproportionate impacts elsewhere."
+    "explanation": "Modularity, accessibility and documented interfaces can support repair and upgrades. Their benefit depends on technical verification and avoiding disproportionate impacts elsewhere.",
+    "difficulty": "applied"
   },
   {
     "id": 6,
@@ -79,7 +85,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "A marketing opinion"
     ],
     "correctIndex": 2,
-    "explanation": "The existence of recycling technology does not prove collection, industrial feasibility or adequate recovered-material quality. The claim needs a documented scope and evidence."
+    "explanation": "The existence of recycling technology does not prove collection, industrial feasibility or adequate recovered-material quality. The claim needs a documented scope and evidence.",
+    "difficulty": "applied"
   },
   {
     "id": 7,
@@ -92,7 +99,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Measured access, tools, disassembly time and acceptance criteria"
     ],
     "correctIndex": 3,
-    "explanation": "Repairability indicators must reflect real tasks, including access, tools, time, replacements and acceptance limits, so engineers can verify the requirement."
+    "explanation": "Repairability indicators must reflect real tasks, including access, tools, time, replacements and acceptance limits, so engineers can verify the requirement.",
+    "difficulty": "advanced"
   },
   {
     "id": 8,
@@ -105,7 +113,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Announce overall environmental approval"
     ],
     "correctIndex": 0,
-    "explanation": "Small estimated differences may not be meaningful when inventories are uncertain. A defensible evaluation identifies influential assumptions and avoids false precision."
+    "explanation": "Small estimated differences may not be meaningful when inventories are uncertain. A defensible evaluation identifies influential assumptions and avoids false precision.",
+    "difficulty": "advanced"
   },
   {
     "id": 101,
@@ -118,7 +127,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "A randomly selected shipper"
     ],
     "correctIndex": 1,
-    "explanation": "Nearby approved stock may reduce transport while protecting availability. Confirm configuration, records, timing and cancellation of the alternative shipment before claiming avoided movement."
+    "explanation": "Nearby approved stock may reduce transport while protecting availability. Confirm configuration, records, timing and cancellation of the alternative shipment before claiming avoided movement.",
+    "difficulty": "foundation"
   },
   {
     "id": 102,
@@ -131,7 +141,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "That the facility has no emissions"
     ],
     "correctIndex": 2,
-    "explanation": "Energy intensity and absolute use answer different questions. Reporting both prevents growth in activity or changes in floor area from becoming a misleading headline."
+    "explanation": "Energy intensity and absolute use answer different questions. Reporting both prevents growth in activity or changes in floor area from becoming a misleading headline.",
+    "difficulty": "foundation"
   },
   {
     "id": 103,
@@ -144,7 +155,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Validate technical and safety conditions with the responsible teams first"
     ],
     "correctIndex": 3,
-    "explanation": "Energy measures cannot override process safety. Verify ventilation limits, operational needs and the measurement of savings within the permitted operating range."
+    "explanation": "Energy measures cannot override process safety. Verify ventilation limits, operational needs and the measurement of savings within the permitted operating range.",
+    "difficulty": "foundation"
   },
   {
     "id": 104,
@@ -157,7 +169,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Leaving out the final leg"
     ],
     "correctIndex": 0,
-    "explanation": "A shared boundary, transport modes, distances and allocation approach allow a defensible comparison. Supplier forecasts are not the same as verified movements."
+    "explanation": "A shared boundary, transport modes, distances and allocation approach allow a defensible comparison. Supplier forecasts are not the same as verified movements.",
+    "difficulty": "applied"
   },
   {
     "id": 105,
@@ -170,7 +183,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Vehicle branding"
     ],
     "correctIndex": 1,
-    "explanation": "Combined visits may save journeys, but poor planning can generate rework or downtime. The comparison must cover the actual completed service."
+    "explanation": "Combined visits may save journeys, but poor planning can generate rework or downtime. The comparison must cover the actual completed service.",
+    "difficulty": "applied"
   },
   {
     "id": 106,
@@ -183,7 +197,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Multiply the CO₂ result arbitrarily"
     ],
     "correctIndex": 2,
-    "explanation": "NOx effects and contrail formation, among others, depend on conditions and require suitable approaches. A partial calculation does not establish total climate benefit."
+    "explanation": "NOx effects and contrail formation, among others, depend on conditions and require suitable approaches. A partial calculation does not establish total climate benefit.",
+    "difficulty": "applied"
   },
   {
     "id": 107,
@@ -196,7 +211,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Its lifecycle GHG performance may be assessed with defined methods and evidence"
     ],
     "correctIndex": 3,
-    "explanation": "Combustion still produces emissions. A possible SAF lifecycle benefit depends on pathway, blend, comparator, chain of custody and method; it does not mean zero aircraft emissions."
+    "explanation": "Combustion still produces emissions. A possible SAF lifecycle benefit depends on pathway, blend, comparator, chain of custody and method; it does not mean zero aircraft emissions.",
+    "difficulty": "advanced"
   },
   {
     "id": 108,
@@ -209,7 +225,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Ignore the hours change without mentioning it"
     ],
     "correctIndex": 0,
-    "explanation": "Attribution must distinguish the measure from weather, activity, tariff and hours. The financial bill and physical energy consumption are different metrics."
+    "explanation": "Attribution must distinguish the measure from weather, activity, tariff and hours. The financial bill and physical energy consumption are different metrics.",
+    "difficulty": "advanced"
   },
   {
     "id": 201,
@@ -222,7 +239,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "No numerical evidence"
     ],
     "correctIndex": 1,
-    "explanation": "Compare impacts per intact delivery using actual performance. Designing for reuse does not prove that return logistics and maintenance work in practice."
+    "explanation": "Compare impacts per intact delivery using actual performance. Designing for reuse does not prove that return logistics and maintenance work in practice.",
+    "difficulty": "foundation"
   },
   {
     "id": 202,
@@ -235,7 +253,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Stop recording packaging configuration"
     ],
     "correctIndex": 2,
-    "explanation": "Part protection is part of the functional requirement. Damage may create additional parts, waste, cost and transport, reversing any apparent benefit of a lighter package."
+    "explanation": "Part protection is part of the functional requirement. Damage may create additional parts, waste, cost and transport, reversing any apparent benefit of a lighter package.",
+    "difficulty": "foundation"
   },
   {
     "id": 203,
@@ -248,7 +267,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "No: redesign the workflow while retaining signatures, revisions and contingency"
     ],
     "correctIndex": 3,
-    "explanation": "Digitising a record does not remove the original paper process. Real dematerialisation needs valid, accessible and controlled electronic records, including during system outages."
+    "explanation": "Digitising a record does not remove the original paper process. Real dematerialisation needs valid, accessible and controlled electronic records, including during system outages.",
+    "difficulty": "foundation"
   },
   {
     "id": 204,
@@ -261,7 +281,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Claim recycling without evidence"
     ],
     "correctIndex": 0,
-    "explanation": "Separation by alloy and contamination prevents degradation and supports suitable recovery routes. The outcome should be documented under applicable quality and safety requirements."
+    "explanation": "Separation by alloy and contamination prevents degradation and supports suitable recovery routes. The outcome should be documented under applicable quality and safety requirements.",
+    "difficulty": "applied"
   },
   {
     "id": 205,
@@ -274,7 +295,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Count it as recycled material"
     ],
     "correctIndex": 1,
-    "explanation": "Waste classification and rules determine safe containers, segregation and traceability. Do not claim recycling or recovery without evidence of actual treatment."
+    "explanation": "Waste classification and rules determine safe containers, segregation and traceability. Do not claim recycling or recovery without evidence of actual treatment.",
+    "difficulty": "applied"
   },
   {
     "id": 206,
@@ -287,7 +309,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Never, because new parts are always better"
     ],
     "correctIndex": 2,
-    "explanation": "Approved repair may extend life and avoid additional production, but qualification, life limits, resource use, safety and configuration remain essential."
+    "explanation": "Approved repair may extend life and avoid additional production, but qualification, life limits, resource use, safety and configuration remain essential.",
+    "difficulty": "applied"
   },
   {
     "id": 207,
@@ -300,7 +323,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Traceability and a verifiable allocation method for that product scope"
     ],
     "correctIndex": 3,
-    "explanation": "The reported proportion depends on input mix and allocation rules. The claim needs documentary scope and does not automatically demonstrate lower total impacts."
+    "explanation": "The reported proportion depends on input mix and allocation rules. The claim needs documentary scope and does not automatically demonstrate lower total impacts.",
+    "difficulty": "advanced"
   },
   {
     "id": 208,
@@ -313,7 +337,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Replace serviceable components"
     ],
     "correctIndex": 0,
-    "explanation": "Preventing consumption, repairing and reusing where safe can avoid resources before waste arises. Apply the hierarchy alongside technical and safety obligations."
+    "explanation": "Preventing consumption, repairing and reusing where safe can avoid resources before waste arises. Apply the hierarchy alongside technical and safety obligations.",
+    "difficulty": "advanced"
   },
   {
     "id": 301,
@@ -326,7 +351,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "That controls are unnecessary"
     ],
     "correctIndex": 1,
-    "explanation": "An SDS has a defined purpose and scope. Applicable duties depend on substance, mixture or article, intended use, restrictions, exposure and technical release processes."
+    "explanation": "An SDS has a defined purpose and scope. Applicable duties depend on substance, mixture or article, intended use, restrictions, exposure and technical release processes.",
+    "difficulty": "foundation"
   },
   {
     "id": 302,
@@ -339,7 +365,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "If testing leaves no record"
     ],
     "correctIndex": 2,
-    "explanation": "Substitution requires evidence of composition and applicable duties, performance, compatibility and process controls. An environmental preference is not automatic compliance."
+    "explanation": "Substitution requires evidence of composition and applicable duties, performance, compatibility and process controls. An environmental preference is not automatic compliance.",
+    "difficulty": "foundation"
   },
   {
     "id": 303,
@@ -352,7 +379,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Verify currency, scope, revision and applicability to the supplied item"
     ],
     "correctIndex": 3,
-    "explanation": "A generic or outdated declaration may not cover current requirements, materials or thresholds. The evidence must link to the specific part and obligation."
+    "explanation": "A generic or outdated declaration may not cover current requirements, materials or thresholds. The evidence must link to the specific part and obligation.",
+    "difficulty": "foundation"
   },
   {
     "id": 304,
@@ -365,7 +393,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Change the indicator category"
     ],
     "correctIndex": 0,
-    "explanation": "Multi-tier sourcing may require upstream supplier and origin information under the applicable diligence process. Missing visibility does not prove an absence of risk."
+    "explanation": "Multi-tier sourcing may require upstream supplier and origin information under the applicable diligence process. Missing visibility does not prove an absence of risk.",
+    "difficulty": "applied"
   },
   {
     "id": 305,
@@ -378,7 +407,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Publish that all suppliers comply"
     ],
     "correctIndex": 1,
-    "explanation": "Responsible due diligence is risk-based and assigns ownership, supplier engagement and suitable prevention or remediation. A credible signal needs management rather than denial."
+    "explanation": "Responsible due diligence is risk-based and assigns ownership, supplier engagement and suitable prevention or remediation. A credible signal needs management rather than denial.",
+    "difficulty": "applied"
   },
   {
     "id": 306,
@@ -391,7 +421,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Approve automatically because there is a stamp"
     ],
     "correctIndex": 2,
-    "explanation": "The phytosanitary mark and physical inspection answer different questions. Follow the applicable packaging and risk-control procedure rather than assuming complete conformity."
+    "explanation": "The phytosanitary mark and physical inspection answer different questions. Follow the applicable packaging and risk-control procedure rather than assuming complete conformity.",
+    "difficulty": "applied"
   },
   {
     "id": 307,
@@ -404,7 +435,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Prevent release until approved compatibility and traceability are verified"
     ],
     "correctIndex": 3,
-    "explanation": "Speed cannot replace configuration control, conformity or airworthiness. A logistics alternative is valid only when technical and documentary requirements are met."
+    "explanation": "Speed cannot replace configuration control, conformity or airworthiness. A logistics alternative is valid only when technical and documentary requirements are met.",
+    "difficulty": "advanced"
   },
   {
     "id": 308,
@@ -417,7 +449,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Wait for the next auditor"
     ],
     "correctIndex": 0,
-    "explanation": "An immediate correction resolves one instance. A corrective and preventive action process tackles causes and verifies that the problem does not recur."
+    "explanation": "An immediate correction resolves one instance. A corrective and preventive action process tackles causes and verifies that the problem does not recur.",
+    "difficulty": "advanced"
   },
   {
     "id": 401,
@@ -430,7 +463,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Only favourable records"
     ],
     "correctIndex": 1,
-    "explanation": "Unknown activity does not mean zero impact. Appropriate proxy factors can be used where method, uncertainty and a route to better primary data are disclosed."
+    "explanation": "Unknown activity does not mean zero impact. Appropriate proxy factors can be used where method, uncertainty and a route to better primary data are disclosed.",
+    "difficulty": "foundation"
   },
   {
     "id": 402,
@@ -443,7 +477,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "It can serve as product certification"
     ],
     "correctIndex": 2,
-    "explanation": "Generic environmental claims can mislead when material boundaries are absent. State the specific measured or estimated performance under defined conditions."
+    "explanation": "Generic environmental claims can mislead when material boundaries are absent. State the specific measured or estimated performance under defined conditions.",
+    "difficulty": "foundation"
   },
   {
     "id": 403,
@@ -456,7 +491,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "As unknown or estimated, with the source and uncertainty stated"
     ],
     "correctIndex": 3,
-    "explanation": "Missing measurement is not evidence of no impact. Ranges and sensitivity analysis support decisions while avoiding false precision."
+    "explanation": "Missing measurement is not evidence of no impact. Ranges and sensitivity analysis support decisions while avoiding false precision.",
+    "difficulty": "foundation"
   },
   {
     "id": 404,
@@ -469,7 +505,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Leaving out the accountable owner"
     ],
     "correctIndex": 0,
-    "explanation": "Traceable claims explain what was compared, where, when and how, and acknowledge relevant exclusions and conditions."
+    "explanation": "Traceable claims explain what was compared, where, when and how, and acknowledge relevant exclusions and conditions.",
+    "difficulty": "applied"
   },
   {
     "id": 405,
@@ -482,7 +519,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Change the baseline year silently"
     ],
     "correctIndex": 1,
-    "explanation": "A relative efficiency improvement can coexist with higher total impact. A sound dashboard presents both and explains the drivers."
+    "explanation": "A relative efficiency improvement can coexist with higher total impact. A sound dashboard presents both and explains the drivers.",
+    "difficulty": "applied"
   },
   {
     "id": 406,
@@ -495,7 +533,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "A generic sustainability approval label"
     ],
     "correctIndex": 2,
-    "explanation": "A conditional decision should identify issues that might reverse it and assign action owners. Sustainability assessment and technical authorisation are distinct decisions."
+    "explanation": "A conditional decision should identify issues that might reverse it and assign action owners. Sustainability assessment and technical authorisation are distinct decisions.",
+    "difficulty": "applied"
   },
   {
     "id": 407,
@@ -508,7 +547,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "No: learning never replaces applicable reviews and authorisations"
     ],
     "correctIndex": 3,
-    "explanation": "A game can explain relevant requirements, but compliance for a real activity depends on evidence, competent authority and the applicable processes."
+    "explanation": "A game can explain relevant requirements, but compliance for a real activity depends on evidence, competent authority and the applicable processes.",
+    "difficulty": "advanced"
   },
   {
     "id": 408,
@@ -521,7 +561,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "A compensation logo"
     ],
     "correctIndex": 0,
-    "explanation": "Buying credits does not physically eliminate the project's emissions. Reporting must distinguish the actual inventory, reductions and credit use and avoid unsupported equivalences."
+    "explanation": "Buying credits does not physically eliminate the project's emissions. Reporting must distinguish the actual inventory, reductions and credit use and avoid unsupported equivalences.",
+    "difficulty": "advanced"
   },
   {
     "id": 501,
@@ -534,7 +575,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Leave the issue out of the report"
     ],
     "correctIndex": 1,
-    "explanation": "Operational resilience does not mean bypassing technical controls. Nearby stock may reduce delay or transport only after suitability and documentation are verified."
+    "explanation": "Operational resilience does not mean bypassing technical controls. Nearby stock may reduce delay or transport only after suitability and documentation are verified.",
+    "difficulty": "foundation"
   },
   {
     "id": 502,
@@ -547,7 +589,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Change dashboard colours"
     ],
     "correctIndex": 2,
-    "explanation": "Addressing the source of repeated emergencies may improve readiness and resource efficiency together. Measure results on comparable cases."
+    "explanation": "Addressing the source of repeated emergencies may improve readiness and resource efficiency together. Measure results on comparable cases.",
+    "difficulty": "foundation"
   },
   {
     "id": 503,
@@ -560,7 +603,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Assess remaining life, qualified alternatives, repairability and supply exposure"
     ],
     "correctIndex": 3,
-    "explanation": "Obsolescence management joins engineering, procurement and operations. Decisions need service-life, configuration, qualification and sourcing information."
+    "explanation": "Obsolescence management joins engineering, procurement and operations. Decisions need service-life, configuration, qualification and sourcing information.",
+    "difficulty": "foundation"
   },
   {
     "id": 504,
@@ -573,7 +617,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Record only an estimated volume"
     ],
     "correctIndex": 0,
-    "explanation": "Operational continuity still requires attention to site discharge limits and possible contaminants. Process water should not be assumed safe to discharge without review."
+    "explanation": "Operational continuity still requires attention to site discharge limits and possible contaminants. Process water should not be assumed safe to discharge without review.",
+    "difficulty": "applied"
   },
   {
     "id": 505,
@@ -586,7 +631,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Cancel all maintenance"
     ],
     "correctIndex": 1,
-    "explanation": "A robust response connects risk assessment, configuration and prevention. Alternative suppliers only reduce risk when their products meet applicable requirements."
+    "explanation": "A robust response connects risk assessment, configuration and prevention. Alternative suppliers only reduce risk when their products meet applicable requirements.",
+    "difficulty": "applied"
   },
   {
     "id": 506,
@@ -599,7 +645,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Annual mean temperature"
     ],
     "correctIndex": 2,
-    "explanation": "Operational choices should be updated using the actual disruption. Reusing the old transport forecast without new risks or extra legs can mislead."
+    "explanation": "Operational choices should be updated using the actual disruption. Reusing the old transport forecast without new risks or extra legs can mislead.",
+    "difficulty": "applied"
   },
   {
     "id": 507,
@@ -612,7 +659,8 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Feed engineering with times, access issues, risks and improvement opportunities"
     ],
     "correctIndex": 3,
-    "explanation": "MRO experience can help design for maintainability and longer service life. Proposed changes remain subject to appropriate engineering and safety review."
+    "explanation": "MRO experience can help design for maintainability and longer service life. Proposed changes remain subject to appropriate engineering and safety review.",
+    "difficulty": "advanced"
   },
   {
     "id": 508,
@@ -625,15 +673,44 @@ export const GENERAL_QUESTIONS: Question[] = [
       "Treat the initial estimate as final"
     ],
     "correctIndex": 0,
-    "explanation": "Sensitivity analysis reveals assumptions that could reverse the decision. Conditional choices need owners, boundaries and a trigger for review."
-  }
+    "explanation": "Sensitivity analysis reveals assumptions that could reverse the decision. Conditional choices need owners, boundaries and a trigger for review.",
+    "difficulty": "advanced"
+  },
+  ...EXTRA_GENERAL_QUESTIONS
 ];
 
 export const QUESTIONS = CLIMATE_MODE ? CLIMATE_QUESTIONS : GENERAL_QUESTIONS;
 
-export function getRandomQuestion(category: number, usedIds: number[]): Question | null {
-  const categoryQuestions = QUESTIONS.filter((question) => question.category === category);
-  const available = categoryQuestions.filter((question) => !usedIds.includes(question.id));
-  const pool = available.length > 0 ? available : categoryQuestions;
-  return pool[Math.floor(Math.random() * pool.length)] ?? null;
+export function getRandomQuestion(category: number, usedIds: number[], history: number[] = [], preferred?: Difficulty): Question | null {
+  const categoryQuestions = QUESTIONS.filter(q => q.category === category);
+  if (!categoryQuestions.length) return null;
+  const available = categoryQuestions.filter(q => !usedIds.includes(q.id));
+  const unused = available.length ? available : categoryQuestions;
+  const unseen = unused.filter(q => !history.includes(q.id));
+  let pool = unseen.length ? unseen : unused;
+  if (!unseen.length) {
+    const oldest = Math.min(...pool.map(q => history.indexOf(q.id)));
+    pool = pool.filter(q => history.indexOf(q.id) === oldest);
+  } else {
+    const levels: Difficulty[] = ['foundation','applied','advanced'];
+    const counts = Object.fromEntries(levels.map(level => [level, usedIds.filter(id => QUESTIONS.find(q => q.id === id)?.difficulty === level).length]));
+    const requested = preferred ? pool.filter(q => q.difficulty === preferred) : [];
+    if (requested.length) pool = requested;
+    else {
+      const minimum = Math.min(...pool.map(q => counts[q.difficulty ?? 'applied']));
+      pool = pool.filter(q => counts[q.difficulty ?? 'applied'] === minimum);
+    }
+  }
+  return shuffleAnswers(pool[Math.floor(Math.random() * pool.length)]);
+}
+export function shuffleAnswers(question: Question, random = Math.random): Question {
+  const indexed = question.options.map((text, index) => ({text, correct: index === question.correctIndex}));
+  for (let i = indexed.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+  }
+  return {...question, options: indexed.map(o => o.text), correctIndex: indexed.findIndex(o => o.correct)};
+}
+export function rememberQuestion(history: number[], id: number): number[] {
+  return [...history.filter(previous => previous !== id), id];
 }

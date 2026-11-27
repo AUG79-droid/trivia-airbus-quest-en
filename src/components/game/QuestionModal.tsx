@@ -15,6 +15,7 @@ export default function QuestionModal({ question, category, isFinal, onAnswer }:
         <div className="question-meta">
           <span className="category-dot" style={{ backgroundColor: CATEGORY_COLORS[category] }} />
           <span>{CATEGORY_NAMES[category]}</span>
+          <span>{({foundation: 'Foundation', applied: 'Applied', advanced: 'Advanced'})[question.difficulty ?? 'applied']}</span>
           {isFinal && <strong>Final challenge</strong>}
         </div>
         <h2 id="question-title">{question.text}</h2>

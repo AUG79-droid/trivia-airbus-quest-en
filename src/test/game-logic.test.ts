@@ -25,9 +25,9 @@ describe('board', () => {
 });
 
 describe('questions', () => {
-  it('provides eight learning questions per category', () => {
+  it('provides thirty learning questions per category', () => {
     for (let category = 0; category < 6; category += 1) {
-      expect(QUESTIONS.filter((question) => question.category === category)).toHaveLength(8);
+      expect(QUESTIONS.filter((question) => question.category === category)).toHaveLength(30);
     }
   });
 
