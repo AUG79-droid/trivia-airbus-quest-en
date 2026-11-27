@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { CATEGORY_COLORS, CATEGORY_SHORT_NAMES, PLAYER_COLORS } from '../../game/board';
 
+import { CLIMATE_MODE } from '../../game/climate';
+
 interface SetupScreenProps {
   onStart: (names: string[]) => void;
 }
@@ -23,10 +25,9 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
           <span /><span /><span /><span /><span /><span />
         </div>
         <p className="eyebrow">LEARN · DECIDE · ADVANCE</p>
-        <h1><span>Sustainability</span> Quest</h1>
-        <p className="setup-lead">
-          Explore eco-design, operations, circularity, supply chain, governance and risk management through a six-category decision board. Earn all six learning badges.
-        </p>
+        <h1><span>{CLIMATE_MODE ? "Climate Adaptation" : "Sustainability"}</span> Quest</h1>
+        <p className="setup-lead">{CLIMATE_MODE ? "Practise hypothetical aerospace decisions about physical risks, product vulnerability, design, operations, extreme events and evidence. The game does not authorise technical or operational changes." : "Explore eco-design, operations, circularity, supply chain, governance and risk management through a six-category decision board. Earn all six learning badges."}</p>
+        <p><a className="primary-button" href={CLIMATE_MODE ? "./" : "?track=climate"}>{CLIMATE_MODE ? "General Sustainability Quest" : "Climate Adaptation Quest"}</a></p>
 
         <div className="mission-flow" aria-label="How to play">
           <div><strong>1</strong><span>Roll the die</span></div>

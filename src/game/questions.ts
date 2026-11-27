@@ -1,7 +1,8 @@
 import { Question } from './types';
+import { CLIMATE_MODE, CLIMATE_QUESTIONS } from './climate';
 
 /** 48 applied questions across six cross-functional categories. Educational examples, not operational or regulatory approvals. */
-export const QUESTIONS: Question[] = [
+export const GENERAL_QUESTIONS: Question[] = [
   {
     "id": 1,
     "category": 0,
@@ -627,6 +628,8 @@ export const QUESTIONS: Question[] = [
     "explanation": "Sensitivity analysis reveals assumptions that could reverse the decision. Conditional choices need owners, boundaries and a trigger for review."
   }
 ];
+
+export const QUESTIONS = CLIMATE_MODE ? CLIMATE_QUESTIONS : GENERAL_QUESTIONS;
 
 export function getRandomQuestion(category: number, usedIds: number[]): Question | null {
   const categoryQuestions = QUESTIONS.filter((question) => question.category === category);
