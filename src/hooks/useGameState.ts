@@ -3,7 +3,9 @@ import { CATEGORY_NAMES, NODES, PLAYER_COLORS, findReachableEndpoints } from '..
 import { getRandomQuestion } from '../game/questions';
 import { GameState, Player } from '../game/types';
 
-const STORAGE_KEY = 'sustainability-quest-en-v3';
+import { CLIMATE_MODE } from '../game/climate';
+
+const STORAGE_KEY = (CLIMATE_MODE ? 'climate-' : '') + 'sustainability-quest-en-v3';
 
 export const initialState: GameState = {
   phase: 'setup',
